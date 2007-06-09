@@ -1,0 +1,89 @@
+ ------
+ Maven 2 Jspc Plugin
+ ------
+ Jeff Genender
+ <jgenender@apache.org>
+ ------
+ December 31, 2005
+
+How To Use
+
+  This plugin allows you to precompile your JSPs and have them included in your war file.
+  
+
+  You must use the jspc plugin in conjunction with the maven-war-plugin.  The maven-war-plugin must have its <webXml> configuration parameter set to the newly created web.xml, which is ${basedir}/target/jspweb.xml by default.  See the following example configuration.
+
++------------------------------------------+
+<project>
+.
+.
+.
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jspc-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>jspc</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <webXml>${basedir}/target/jspweb.xml</webXml>
+                </configuration>
+            </plugin>
+        </plugins>
+
+            .
+            .
+            .
++------------------------------------------+
+
+  If you are using Servlet 2.4 or later, there is no need to place a web fragment tag in your web.xml file.  The plugin will simply append it at the end. However, if you want a specific location in your web.xml file that you want to inject your web fragment,  you can do so by placing a tag that tells the jspc plugin where to inject the servlet/jsp mapping. First, in the pom, you need to set the configuration parameter to the fragment tag to look for, such as <<<\<!-- [INSERT FRAGMENT HERE] --\>>>>.  However, keep in mind that since the pom is based on XML, you need to escape your XML.  Your setup would look like the following:
+
++------------------------------------------+
+.
+.
+.
+<configuration>
+    <webXml>${basedir}/target/jspweb.xml</webXml>
+    <injectString>&lt;!-- [INSERT FRAGMENT HERE] --&gt;</injectString>
+</configuration>
+.
+.
+.
++------------------------------------------+
+
+  Then in your web.xml file, you need to place the tag where you want the injection to occur.  A good place is generally right after your last declared servlet and before the servlet-mapping.  Here is an example:
+  
++------------------------------------------+
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" version="2.4">
+.
+.
+.
+    </servlet>
+    
+    <!-- [INSERT FRAGMENT HERE] -->
+    
+    <servlet-mapping>
+.
+.
+.
+</web-app>
++------------------------------------------+
+
+Non war projects
+
+  You can also use this plugin with non-war projects, for instance to validate JSPs. They will be compiled, but not included in your final artifact, and no web.xml file will be generated or modified.
+  If you want to just validate and compile your JSPs without actually including the generated code in your war project, you can also use set the includeInProject parameter to false.
+

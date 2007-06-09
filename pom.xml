@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<!-- $Id$ -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>mojo-sandbox</artifactId>
+        <version>3</version>
+    </parent>
+    
+    <groupId>org.codehaus.mojo.jspc</groupId>
+    <artifactId>jspc</artifactId>
+    <name>JSPC Maven Support</name>
+    <packaging>pom</packaging>
+    <version>2.0-SNAPSHOT</version>
+    
+    <description>
+        Provides support for JSP compilation.
+    </description>
+    
+    <url>http://mojo.codehaus.org/jspc</url>
+    
+    <issueManagement>
+        <system>jira</system>
+        <url>http://jira.codehaus.org/browse/MJSPC</url>
+    </issueManagement>
+    
+    <developers>
+        <developer>
+            <name>Jeff Genender</name>
+            <email>jgenender@apache.org</email>
+            <organization>Savoir Technologies</organization>
+            <organizationUrl>http://www.savoirtech.com</organizationUrl>
+            <timezone>-7</timezone>
+        </developer>
+        
+        <developer>
+            <id>user57</id>
+            <name>Jason Dillon</name>
+            <email>jason@planet57.com</email>
+        </developer>
+    </developers>
+    
+    <contributors>
+        <contributor>
+            <name>Grzegorz Slowikowski</name>
+            <email>gs@tiger.com.pl</email>
+            <organization>Scott Tiger S.A.</organization>
+            <organizationUrl>http://www.tiger.com.pl</organizationUrl>
+            <timezone>+1</timezone>
+        </contributor>
+        
+        <contributor>
+            <name>Pawel Pastula</name>
+            <email>pablo@tiger.com.pl</email>
+            <organization>Scott Tiger S.A.</organization>
+            <organizationUrl>http://www.tiger.com.pl</organizationUrl>
+            <timezone>+1</timezone>
+        </contributor>
+    </contributors>
+
+    <repositories>
+        <repository>
+            <id>apache-snapshots</id>
+            <name>Apache Snapshots Repository</name>
+            <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+                <checksumPolicy>ignore</checksumPolicy>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
+    
+    <modules>
+        <module>jspc-compiler-api</module>
+        <module>jspc-compilers</module>
+        <module>jspc-maven-plugin</module>
+    </modules>
+    
+    <build>
+        <defaultGoal>install</defaultGoal>
+        
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav</artifactId>
+                <version>1.0-beta-2</version>
+            </extension>
+        </extensions>
+        
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.0-beta-5</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.3</version>
+                    <configuration>
+                        <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>2.2</version>
+                </plugin>
+                
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.2</version>
+                    <configuration>
+                        <source>1.4</source>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.4</source>
+                    <target>1.4</target>
+                </configuration>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-idea-plugin</artifactId>
+                <configuration>
+                    <jdkName>1.4</jdkName>
+                    <jdkLevel>1.4</jdkLevel>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <source>1.4</source>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+    
+    <profiles>
+        <profile>
+            <id>super-helpful-integration-tests</id>
+            
+            <activation>
+                <property>
+                    <name>shit</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>shitty-maven-plugin</artifactId>
+                        <version>1.0-alpha-1-SNAPSHOT</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>clean</goal>
+                                    <goal>install</goal>
+                                    <goal>test</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        <profile>
+            <id>stage-distribution</id>
+            
+            <activation>
+                <property>
+                    <name>stage.distributionUrl</name>
+                </property>
+            </activation>
+            
+            <distributionManagement>
+                <repository>
+                    <id>stage-repository</id>
+                    <url>${stage.distributionUrl}/repository</url>
+                </repository>
+                <snapshotRepository>
+                    <id>stage-snapshot-repository</id>
+                    <url>${stage.distributionUrl}/snapshot-repository</url>
+                </snapshotRepository>
+                <site>
+                    <id>stage-site</id>
+                    <url>${stage.distributionUrl}/site</url>
+                </site>
+            </distributionManagement>
+        </profile>
+    </profiles>
+</project>
