@@ -24,8 +24,8 @@
     
     <parent>
         <groupId>org.codehaus.mojo</groupId>
-        <artifactId>mojo-sandbox</artifactId>
-        <version>3</version>
+        <artifactId>mojo</artifactId>
+        <version>14</version>
     </parent>
     
     <groupId>org.codehaus.mojo.jspc</groupId>
