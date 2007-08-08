@@ -31,6 +31,10 @@
         <href>http://codehaus.org</href>
     </bannerRight>
 
+    <publishDate format="dd MMM yyyy" position="left"/>
+
+    <version position="left"/>
+
     <body>
         <links>
             <item name="Mojo" href="http://mojo.codehaus.org"/>
