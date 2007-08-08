@@ -1,88 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<!-- $Id: pom.xml 4762 2007-08-06 17:22:09Z user57 $ -->
+
 <faqs title="Frequently Asked Questions">
 
-  <part id="general">
-    <title>General</title>
+    <part id="general">
+        <title>General</title>
 
-    <faq id="work">
-      <question>Before version 1.4.4 the plugin worked, now it doesn't, what 
-      happened?</question>
-      <answer>
-      <p>Remove the <![CDATA[&lt;phase&gt;compile&lt;/phase&gt;]]> from the 
-      execution section in the plugin section of your pom.  See 
-      <a href="./usage.html">usage</a> for  more details.</p>
-      </answer>
-    </faq>
-    
-    <faq id="work">
-      <question>It seems to build my project fine, as it says its building the 
-      JSPs, but when I deploy my Web application, its compiling the JSPs at that
-      time. When I check the web.xml, there are no references to the JSPs. The
-      plugin doesn't seem to work.</question>
-      <answer>
-      <p>First, check to see that you have the <code>
-      <![CDATA[&lt;!-- [INSERT FRAGMENT HERE] --&gt;]]></code> in your web.xml.  
-      The jspc plugin needs to know where to inject the jsp/servlet mapping.  
-      Second, the  jspc plugin needs to work with the maven war plugin to get the 
-      jsp  names injected as a servlet.  Be sure you added the maven-war-plugin to 
-      your pom and have set the webXml configuration parameter to point to the one 
-      created by the jspc plugin. See <a href="./usage.html">usage</a> for more 
-      details.</p>
-      </answer>
-    </faq>
-    
-    <faq id="verifyError">
-      <question>Everything compiles fine, but when I deploy my war, I get a
-      <code>java.lang.VerifyError</code>. How can I fix this?</question>
-      <answer>
-      <p>This is almost always caused by a mismatch in the compiled code not 
-      matching up and running in a different compiler version.  The plugin defaults
-      to 1.4 version of compiled code.  Be sure to  declare the source and target 
-      version parameters in the plugin and that they  match what you may have them 
-      set to for your standard compiles. Example:</p>
-<pre>
+        <faq id="work">
+            <question>
+                Before version 1.4.4 the plugin worked, now it doesn't, what happened?
+            </question>
+            <answer>
+                <p>Remove the <![CDATA[<phase>compile</phase>]]> from the 
+                execution section in the plugin section of your pom.  See 
+                <a href="./usage.html">usage</a> for  more details.</p>
+            </answer>
+        </faq>
+
+        <faq id="work">
+            <question>
+                It seems to build my project fine, as it says its building the 
+                JSPs, but when I deploy my Web application, its compiling the JSPs at that
+                time. When I check the web.xml, there are no references to the JSPs. The
+                plugin doesn't seem to work.
+            </question>
+            <answer>
+                <p>First, check to see that you have the <code>
+                <![CDATA[<!-- [INSERT FRAGMENT HERE] -->]]></code> in your web.xml.  
+                The jspc plugin needs to know where to inject the jsp/servlet mapping.  
+                Second, the  jspc plugin needs to work with the maven war plugin to get the 
+                jsp  names injected as a servlet.  Be sure you added the maven-war-plugin to 
+                your pom and have set the webXml configuration parameter to point to the one 
+                created by the jspc plugin. See <a href="./usage.html">usage</a> for more 
+                details.</p>
+            </answer>
+        </faq>
+
+        <faq id="verifyError">
+            <question>
+                Everything compiles fine, but when I deploy my war, I get a
+                <code>java.lang.VerifyError</code>. How can I fix this?
+            </question>
+            <answer>
+                <p>This is almost always caused by a mismatch in the compiled code not 
+                matching up and running in a different compiler version.  The plugin defaults
+                to 1.4 version of compiled code.  Be sure to  declare the source and target 
+                version parameters in the plugin and that they  match what you may have them 
+                set to for your standard compiles. Example:</p>
+                <code>
 <![CDATA[
-.
-.
-.
-    &lt;build&gt;
-        &lt;plugins&gt;
-            &lt;plugin&gt;
-                &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
-                &lt;artifactId&gt;jspc-maven-plugin&lt;/artifactId&gt;
-                &lt;executions&gt;
-                    &lt;execution&gt;
-                        &lt;id&gt;jspc&lt;/id&gt;
-                        &lt;goals&gt;
-                            &lt;goal&gt;compile&lt;/goal&gt;
-                        &lt;/goals&gt;
-                        <b>&lt;configuration&gt;
-                            &lt;source&gt;1.5&lt;/source&gt;
-                            &lt;target&gt;1.5&lt;/target&gt;
-                        &lt;/configuration&gt;</b>
-                    &lt;/execution&gt;
-                &lt;/executions&gt;
-            &lt;/plugin&gt;
-            .
-            .
-            .
+    &lt;plugin&gt;
+        &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
+        &lt;artifactId&gt;jspc-maven-plugin&lt;/artifactId&gt;
+        &lt;executions&gt;
+            &lt;execution&gt;
+                &lt;id&gt;jspc&lt;/id&gt;
+                &lt;goals&gt;
+                    &lt;goal&gt;compile&lt;/goal&gt;
+                &lt;/goals&gt;
+                &lt;configuration&gt;
+                    &lt;source&gt;1.5&lt;/source&gt;
+                    &lt;target&gt;1.5&lt;/target&gt;
+                &lt;/configuration&gt;
+            &lt;/execution&gt;
+        &lt;/executions&gt;
+    &lt;/plugin&gt;
 ]]>
-</pre>
-      </answer>
-    </faq>
-    
-    <faq id="compiler">
-      <question>I have set the <code>source</code> and  <code>target</code> 
-      configuration parameters to 1.5 as you showed, but now I get <b><code>Errors 
-      found  during compilation</code></b> exception when I do a  build.</question>
-      <answer>
-      <p>
-      Be sure you are running a 1.5 compiler.  Using a 1.4.X compiler when declaring
-      the <code>source</code> and <code>target</code> configuration parameters to 
-      1.5 will always result in this error.
-      </p>
-      </answer>
-    </faq>
-    
-  </part>
-    
+                </code>
+            </answer>
+        </faq>
+
+        <faq id="compiler">
+            <question>
+                I have set the <code>source</code> and  <code>target</code> 
+                configuration parameters to 1.5 as you showed, but now I get <b><code>Errors 
+                found  during compilation</code></b> exception when I do a  build.
+            </question>
+            <answer>
+                <p>Be sure you are running a 1.5 compiler.  Using a 1.4.X compiler when declaring
+                the <code>source</code> and <code>target</code> configuration parameters to 
+                1.5 will always result in this error.</p>
+            </answer>
+        </faq>
+    </part>
+
 </faqs>
