@@ -26,13 +26,16 @@
 JSP Compilation Support for Maven 2
 
  Provides support to precompile your JSPs and have them included into your WAR file.
+ 
+ Version 2 of the JSP compilation support includes a pluggable JSP compiler implementation,
+ which current allows different versions of the Tomcat Jasper compiler to be used as needed.
 
 * Maven Plugin
 
  * {{{jspc-maven-plugin/index.html}jspc-maven-plugin}}: JSP Compilation support for Maven 2.
  
  []
- 
+
 * JSP Compilers
 
  In version 2 of the JSP plugin for Maven 2, the JSP compiler implementation is pluggable.
