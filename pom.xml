@@ -58,6 +58,9 @@
             <id>user57</id>
             <name>Jason Dillon</name>
             <email>jason@planet57.com</email>
+            <roles>
+                <role>Avid Crack Smoker</role>
+            </roles>
         </developer>
     </developers>
     
