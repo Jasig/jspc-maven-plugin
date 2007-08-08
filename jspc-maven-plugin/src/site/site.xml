@@ -41,8 +41,7 @@
 
         <menu name="Overview">
             <item name="Introduction" href="index.html"/>
-            <item name="Standard usage" href="usage.html"/>
-            <item name="FAQ" href="faq.html"/>
+            <item name="Usage" href="usage.html"/>
         </menu>
 
         ${modules}

@@ -1,89 +1,120 @@
  ------
- Maven 2 Jspc Plugin
+ Usage
  ------
- Jeff Genender
- <jgenender@apache.org>
  ------
- December 31, 2005
+ $Id: index.apt 4784 2007-08-08 02:58:18Z user57 $
 
-How To Use
+~~ 
+~~ Licensed to the Apache Software Foundation (ASF) under one
+~~ or more contributor license agreements.  See the NOTICE file
+~~ distributed with this work for additional information
+~~ regarding copyright ownership.  The ASF licenses this file
+~~ to you under the Apache License, Version 2.0 (the
+~~ "License"); you may not use this file except in compliance
+~~ with the License.  You may obtain a copy of the License at
+~~
+~~  http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~ Unless required by applicable law or agreed to in writing,
+~~ software distributed under the License is distributed on an
+~~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+~~ KIND, either express or implied.  See the License for the
+~~ specific language governing permissions and limitations
+~~ under the License.
+~~
 
-  This plugin allows you to precompile your JSPs and have them included in your war file.
-  
+Usage
 
-  You must use the jspc plugin in conjunction with the maven-war-plugin.  The maven-war-plugin must have its <webXml> configuration parameter set to the newly created web.xml, which is ${basedir}/target/jspweb.xml by default.  See the following example configuration.
+ <<NOTE:>> The configuration for version 2.0 of the <<<jspc-maven-plugin>>> has changed
+ and you will need to update your <<<pom.xml>>> configuration to use the plugin correctly.
 
-+------------------------------------------+
-<project>
-.
-.
-.
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jspc-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>jspc</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <webXml>${basedir}/target/jspweb.xml</webXml>
-                </configuration>
-            </plugin>
-        </plugins>
+* WAR Projects
 
-            .
-            .
-            .
-+------------------------------------------+
+ You must use this plugin in conjunction with the
+ {{{http://maven.apache.org/plugins/maven-war-plugin}maven-war-plugin}}.
+ The <<<maven-war-plugin>>> must have its <<<webXml>>> configuration parameter set to the
+ newly created <<<web.xml>>>, which is <<<$\{pom.basedir\}/target/jspweb.xml>>> by default.
 
-  If you are using Servlet 2.4 or later, there is no need to place a web fragment tag in your web.xml file.  The plugin will simply append it at the end. However, if you want a specific location in your web.xml file that you want to inject your web fragment,  you can do so by placing a tag that tells the jspc plugin where to inject the servlet/jsp mapping. First, in the pom, you need to set the configuration parameter to the fragment tag to look for, such as <<<\<!-- [INSERT FRAGMENT HERE] --\>>>>.  However, keep in mind that since the pom is based on XML, you need to escape your XML.  Your setup would look like the following:
++----------+
+<plugin>
+    <groupId>org.codehaus.mojo.jspc</groupId>
+    <artifactId>jspc-maven-plugin</artifactId>
+    <executions>
+        <execution>
+            <goals>
+                 <goal>compile</goal>
+            </goals>
+        </execution>
+    </executions>
+    
+    <!-- Use the Tomcat 6 JSP compiler -->
+    <dependencies>
+        <dependency>
+            <groupId>org.codehaus.mojo.jspc</groupId>
+            <artifactId>jspc-compiler-tomcat6</artifactId>
+        </dependency>
+    </dependencies>
+</plugin>
 
-+------------------------------------------+
-.
-.
-.
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-war-plugin</artifactId>
+    <configuration>
+        <webXml>${pom.basedir}/target/jspweb.xml</webXml>
+    </configuration>
+</plugin>
++----------+
+
+ If you are using Servlet 2.4 or later, there is no need to place a web fragment
+ tag in your web.xml file.  The plugin will simply append it at the end.
+ 
+ However, if you want a specific location in your <<<web.xml>>> file that you want to
+ inject your web fragment,  you can do so by placing a tag that tells the JSPC plugin
+ where to inject the servlet/jsp mapping.
+ 
+ First, in the pom, you need to set the configuration parameter to the fragment
+ tag to look for, such as:
+ 
++----------+
+<!-- [INSERT FRAGMENT HERE] -->
++----------+
+
+ However, keep in mind that since the pom is based on XML, you need to escape your XML.
+ Your setup would look like the following:
+
++----------+
 <configuration>
     <webXml>${basedir}/target/jspweb.xml</webXml>
     <injectString>&lt;!-- [INSERT FRAGMENT HERE] --&gt;</injectString>
 </configuration>
-.
-.
-.
-+------------------------------------------+
++----------+
 
-  Then in your web.xml file, you need to place the tag where you want the injection to occur.  A good place is generally right after your last declared servlet and before the servlet-mapping.  Here is an example:
-  
-+------------------------------------------+
+ Then in your web.xml file, you need to place the tag where you want the
+ injection to occur.  A good place is generally right after your last declared
+ servlet and before the servlet-mapping.  Here is an example:
+
++----------+
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="http://java.sun.com/xml/ns/j2ee" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" version="2.4">
-.
-.
-.
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" version="2.4">
+    <servlet>
+        <!-- servlets defined here -->
     </servlet>
     
     <!-- [INSERT FRAGMENT HERE] -->
     
     <servlet-mapping>
-.
-.
-.
+        <!-- mappings defined here -->
+    </servlet-mapping>
 </web-app>
 +------------------------------------------+
 
-Non war projects
+* Non-WAR Projects
 
-  You can also use this plugin with non-war projects, for instance to validate JSPs. They will be compiled, but not included in your final artifact, and no web.xml file will be generated or modified.
-  If you want to just validate and compile your JSPs without actually including the generated code in your war project, you can also use set the includeInProject parameter to false.
+ You can also use this plugin with non-war projects, for instance to validate JSPs.
+ They will be compiled, but not included in your final artifact, and no <<<web.xml>>>
+ file will be generated or modified.
+ 
+ If you want to just validate and compile your JSPs without actually including the
+ generated code in your war project, you can also use set the <<<includeInProject>>>
+ parameter to false.
 
