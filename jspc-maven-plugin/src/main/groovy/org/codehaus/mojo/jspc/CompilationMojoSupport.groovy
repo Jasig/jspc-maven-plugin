@@ -315,7 +315,7 @@ abstract class CompilationMojoSupport
         // JspC needs URLClassLoader, with tools.jar
         def parent = Thread.currentThread().contextClassLoader
         def cl = new JspcMojoClassLoader(parent)
-        cl.addURL(toolsJar.toURL())
+        cl.addURL(toolsJar.toURI().toURL())
         Thread.currentThread().setContextClassLoader(cl)
 
         try {
