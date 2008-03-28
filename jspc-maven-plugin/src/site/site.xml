@@ -16,7 +16,7 @@
     limitations under the License.
 -->
 
-<!-- $Id: site.xml 4763 2007-08-06 17:26:32Z user57 $ -->
+<!-- $Id$ -->
 
 <project name="${project.name}">
     <bannerLeft>
