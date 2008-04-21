@@ -22,9 +22,14 @@
 
     <modelVersion>4.0.0</modelVersion>
     
-    <groupId>org.codehaus.mojo.jspc.it</groupId>
+    <parent>
+        <groupId>org.codehaus.mojo.jspc.it.jspc-maven-plugin</groupId>
+        <artifactId>common</artifactId>
+        <version>testing</version>
+        <relativePath>../common.xml</relativePath>
+    </parent>
+    
     <artifactId>jspc-1</artifactId>
-    <version>testing</version>
     <packaging>war</packaging>
     
     <description>
@@ -36,8 +41,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo.jspc</groupId>
                 <artifactId>jspc-maven-plugin</artifactId>
-                <version>testing</version>
-                
                 <executions>
                     <execution>
                         <goals>
@@ -45,7 +48,6 @@
                         </goals>
                     </execution>
                 </executions>
-                
                 <dependencies>
                     <dependency>
                         <groupId>org.codehaus.mojo.jspc</groupId>
@@ -53,28 +55,6 @@
                         <version>testing</version>
                     </dependency>
                 </dependencies>
-            </plugin>
-            
-            <plugin>
-                <groupId>org.codehaus.mojo.groovy</groupId>
-                <artifactId>groovy-maven-plugin</artifactId>
-                <version>1.0-beta-1</version>
-                
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>execute</goal>
-                        </goals>
-                        
-                        <configuration>
-                            <source>
-                                def file = new File(project.basedir, 'target/jsp-source/jsp/index_jsp.class')
-                                assert file.exists()
-                            </source>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

@@ -26,6 +26,8 @@ import org.apache.jasper.JspC;
 /**
  * JSP compiler for Tomcat 5.
  *
+ * @plexus.component role="org.codehaus.mojo.jspc.compiler.JspCompiler" role-hint="tomcat5"
+ *
  * @version $Id$
  */
 public class JspCompilerImpl

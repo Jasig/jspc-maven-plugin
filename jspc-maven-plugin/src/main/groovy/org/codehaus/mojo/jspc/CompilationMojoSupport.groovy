@@ -19,7 +19,7 @@
 
 package org.codehaus.mojo.jspc
 
-import org.codehaus.mojo.groovy.GroovyMojoSupport
+import org.codehaus.groovy.maven.mojo.GroovyMojo
 
 import org.apache.commons.lang.SystemUtils
 import org.apache.commons.lang.StringUtils
@@ -40,7 +40,7 @@ import org.codehaus.mojo.jspc.compiler.JspCompiler
  * @version $Id$
  */
 abstract class CompilationMojoSupport
-    extends GroovyMojoSupport
+    extends GroovyMojo
 {
     /**
      * The working directory to create the generated java source files.
@@ -315,7 +315,7 @@ abstract class CompilationMojoSupport
         // JspC needs URLClassLoader, with tools.jar
         def parent = Thread.currentThread().contextClassLoader
         def cl = new JspcMojoClassLoader(parent)
-        cl.addURL(toolsJar.toURI().toURL())
+        cl.addURL(findToolsJar().toURI().toURL())
         Thread.currentThread().setContextClassLoader(cl)
 
         try {
@@ -357,7 +357,7 @@ abstract class CompilationMojoSupport
     /**
      * Figure out where the tools.jar file lives.
      */
-    private File getToolsJar() {
+    private File findToolsJar() {
         def javaHome = new File(System.properties['java.home'])
         
         def file
