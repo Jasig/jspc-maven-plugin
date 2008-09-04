@@ -114,12 +114,6 @@
             </dependency>
             
             <dependency>
-                <groupId>org.apache.maven</groupId>
-                <artifactId>maven-project</artifactId>
-                <version>2.0.5</version>
-            </dependency>
-            
-            <dependency>
                 <groupId>org.apache.maven.shared</groupId>
                 <artifactId>file-management</artifactId>
                 <version>1.1</version>
@@ -220,27 +214,10 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.4</version>
+                    <version>2.5</version>
                     <configuration>
                         <source>1.4</source>
                     </configuration>
-                </plugin>
-                
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-idea-plugin</artifactId>
-                    <version>2.1</version>
-                    <configuration>
-                        <jdkName>1.4</jdkName>
-                        <jdkLevel>1.4</jdkLevel>
-                        <linkModules>true</linkModules>
-                    </configuration>
-                </plugin>
-                
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-eclipse-plugin</artifactId>
-                    <version>2.5.1</version>
                 </plugin>
                 
                 <plugin>
@@ -316,7 +293,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.4</version>
+                <version>2.5</version>
                 <configuration>
                     <quiet>true</quiet>
                     <links>
@@ -377,12 +354,11 @@
     
     <profiles>
         <profile>
-            <id>super-helpful-integration-tests</id>
+            <id>integration-tests</id>
             
             <activation>
                 <property>
-                    <name>shit</name>
-                    <value>true</value>
+                    <name>it</name>
                 </property>
             </activation>
             
@@ -406,54 +382,96 @@
         </profile>
         
         <profile>
-            <id>idea</id>
+            <id>release</id>
+
+            <activation>
+                <property>
+                    <name>release</name>
+                </property>
+            </activation>
             
             <build>
-                <defaultGoal>validate</defaultGoal>
-                
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-idea-plugin</artifactId>
+                        <artifactId>maven-release-plugin</artifactId>
                         <configuration>
-                            <overwrite>true</overwrite>
-                            <downloadSources>true</downloadSources>
-                            <downloadJavadocs>true</downloadJavadocs>
+                            <autoVersionSubmodules>true</autoVersionSubmodules>
+                            <useReleaseProfile>false</useReleaseProfile>
+                            <arguments>-Drelease</arguments>
+                            <!--
+                            NOTE: The integration tests currently require install (when we should use verify),
+                                  due to a bug in the shitty plugin.
+                            
+                            <preparationGoals>clean verify -Dit</preparationGoals>
+                            -->
+                            <preparationGoals>clean install -Dit</preparationGoals>
+                            <goals>deploy</goals>
+                        </configuration>
+                    </plugin>
+                    
+                    <!--
+                    FIXME: Need to get this setup.
+                    
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <inherited>true</inherited>
+                        <configuration>
+                            <passphrase>${gpg.passphrase}</passphrase>
                         </configuration>
                         <executions>
                             <execution>
-                                <phase>validate</phase>
                                 <goals>
-                                    <goal>clean</goal>
-                                    <goal>idea</goal>
+                                    <goal>sign</goal>
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+                    -->
+                    
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <configuration>
+                            <updateReleaseInfo>true</updateReleaseInfo>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
         </profile>
         
         <profile>
-            <id>eclipse</id>
-
+            <id>distribution</id>
+            
+            <activation>
+                <property>
+                    <name>release</name>
+                </property>
+            </activation>
+            
             <build>
-                <defaultGoal>validate</defaultGoal>
-
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-eclipse-plugin</artifactId>
-                        <configuration>
-                            <downloadSources>true</downloadSources>
-                            <downloadJavadocs>true</downloadJavadocs>
-                        </configuration>
+                        <artifactId>maven-source-plugin</artifactId>
                         <executions>
                             <execution>
-                                <phase>validate</phase>
                                 <goals>
-                                    <goal>clean</goal>
-                                    <goal>eclipse</goal>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>javadoc</goal>
+                                    <goal>jar</goal>
                                 </goals>
                             </execution>
                         </executions>
