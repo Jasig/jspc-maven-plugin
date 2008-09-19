@@ -43,7 +43,7 @@ JSP Compilation Support for Maven 2
 
  * {{{jspc-compilers/jspc-compiler-tomcat5/index.html}Tomcat 5 Compiler}}: Uses Tomcat 5.5.15 Jasper compiler.
  
- * {{{jspc-compilers/jspc-compiler-tomcat6/index.html}Tomcat 6 Compiler}}: Uses Tomcat 6.0.13 Jasper compiler.
+ * {{{jspc-compilers/jspc-compiler-tomcat6/index.html}Tomcat 6 Compiler}}: Uses Tomcat 6.0.18 Jasper compiler.
  
  []
 
