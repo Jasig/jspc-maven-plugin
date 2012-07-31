@@ -68,6 +68,13 @@
                 <role>Avid Crack Smoker</role>
             </roles>
         </developer>
+
+        <developer>
+            <id>shinsuke</id>
+            <name>Shinsuke Sugaya</name>
+            <email>shinsuke@apache.org</email>
+            <timezone>+9</timezone>
+        </developer>
     </developers>
     
     <contributors>
