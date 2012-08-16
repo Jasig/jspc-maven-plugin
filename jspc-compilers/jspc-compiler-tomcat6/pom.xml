@@ -32,7 +32,8 @@
     <name>JSPC Compiler for Tomcat 6</name>
 
     <properties>
-        <tomcatVersion>6.0.18</tomcatVersion>
+        <tomcatVersion>6.0.35</tomcatVersion>
+        <ecjVersion>3.7.2</ecjVersion>
     </properties>
     
     <dependencies>
@@ -43,9 +44,9 @@
         </dependency>
         
         <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>jasper-jdt</artifactId>
-            <version>${tomcatVersion}</version>
+            <groupId>org.eclipse.jdt.core.compiler</groupId>
+            <artifactId>ecj</artifactId>
+            <version>${ecjVersion}</version>
         </dependency>
         
         <dependency>
