@@ -19,7 +19,7 @@
 
 package org.codehaus.mojo.jspc
 
-import org.codehaus.groovy.maven.mojo.GroovyMojo
+import org.codehaus.gmaven.mojo.GroovyMojo
 
 import org.apache.commons.lang.SystemUtils
 import org.apache.commons.lang.StringUtils

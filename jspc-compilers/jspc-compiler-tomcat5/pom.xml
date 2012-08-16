@@ -35,20 +35,32 @@
         <dependency>
             <groupId>tomcat</groupId>
             <artifactId>jasper-compiler</artifactId>
-            <version>5.5.15</version>
+            <version>5.5.23</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>ant</groupId>
+                    <artifactId>ant</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         
         <dependency>
             <groupId>tomcat</groupId>
             <artifactId>jasper-compiler-jdt</artifactId>
-            <version>5.5.15</version>
+            <version>5.5.23</version>
         </dependency>
         
         <!-- this should be in jasper-compiler -->
         <dependency>
             <groupId>tomcat</groupId>
             <artifactId>jasper-runtime</artifactId>
-            <version>5.5.15</version>
+            <version>5.5.23</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.8.2</version>
         </dependency>
     </dependencies>
 

@@ -24,8 +24,8 @@
     
     <parent>
         <groupId>org.codehaus.mojo</groupId>
-        <artifactId>mojo</artifactId>
-        <version>14</version>
+        <artifactId>mojo-parent</artifactId>
+        <version>30</version>
     </parent>
     
     <groupId>org.codehaus.mojo.jspc</groupId>
@@ -115,11 +115,23 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.codehaus.groovy.maven</groupId>
+                <groupId>org.codehaus.gmaven</groupId>
                 <artifactId>gmaven-mojo</artifactId>
-                <version>1.0-rc-3</version>
+                <version>1.4</version>
             </dependency>
-            
+
+            <dependency>
+                <groupId>org.codehaus.gmaven</groupId>
+                <artifactId>gmaven-plugin</artifactId>
+                <version>1.4</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy-all</artifactId>
+                <version>1.7.4</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.apache.maven.shared</groupId>
                 <artifactId>file-management</artifactId>
@@ -162,9 +174,12 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.codehaus.groovy.maven</groupId>
+                    <groupId>org.codehaus.gmaven</groupId>
                     <artifactId>gmaven-plugin</artifactId>
-                    <version>1.0-rc-3</version>
+                    <version>1.4</version>
+                    <configuration>
+                        <providerSelection>1.8</providerSelection>
+                    </configuration>
                 </plugin>
                 
                 <plugin>
@@ -254,7 +269,7 @@
             </plugin>
             
             <plugin>
-                <groupId>org.codehaus.groovy.maven</groupId>
+                <groupId>org.codehaus.gmaven</groupId>
                 <artifactId>gmaven-plugin</artifactId>
                 <executions>
                     <execution>
@@ -266,6 +281,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <providerSelection>1.5</providerSelection>
+                </configuration>
             </plugin>
 
             <plugin>
