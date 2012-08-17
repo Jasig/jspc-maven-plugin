@@ -379,6 +379,20 @@ abstract class CompilationMojoSupport
         // Read the files
         assert inputWebXml.exists()
         String webXml = inputWebXml.text
+
+        def m = java.util.regex.Pattern
+            .compile("<\\?xml .*encoding\\s*=\\s*['\"]([^'\"]+)['\"].*\\?>")
+            .matcher(webXml);
+        String encoding = null;
+        if (m.find()){
+            encoding = m.group(1);
+        }
+        if(encoding == null){
+            encoding = "UTF-8";
+        }
+        if(!encoding.equalsIgnoreCase(System.getProperty("file.encoding"))){
+            webXml = inputWebXml.getText(encoding);
+        }
         
         assert webFragmentFile.exists()
         String fragmentXml = webFragmentFile.text
@@ -401,7 +415,7 @@ abstract class CompilationMojoSupport
 
         // Write the file
         outputWebXml.parentFile.mkdirs()
-        outputWebXml.write(output)
+        outputWebXml.write(output, encoding)
     }
 
     private String filter(String input) {
