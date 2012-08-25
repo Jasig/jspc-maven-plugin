@@ -28,6 +28,7 @@
         <version>2.0-alpha-4-SNAPSHOT</version>
     </parent>
     
+    <groupId>org.codehaus.mojo</groupId>
     <artifactId>jspc-maven-plugin</artifactId>
     <name>JSPC Maven Plugin</name>
     <packaging>maven-plugin</packaging>
