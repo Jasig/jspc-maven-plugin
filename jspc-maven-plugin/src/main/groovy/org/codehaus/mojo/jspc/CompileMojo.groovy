@@ -36,7 +36,6 @@ class CompileMojo
      *
      * @parameter expression="${project.compileClasspathElements}"
      * @required
-     * @readonly
      */
     private List classpathElements
 
