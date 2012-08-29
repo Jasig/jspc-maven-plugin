@@ -83,10 +83,12 @@ Usage
  Your setup would look like the following:
 
 +----------+
-<configuration>
-    <webXml>${basedir}/target/jspweb.xml</webXml>
-    <injectString>&lt;!-- [INSERT FRAGMENT HERE] --&gt;</injectString>
-</configuration>
+<plugin>
+    <groupId>org.codehaus.mojo.jspc</groupId>
+    <artifactId>jspc-maven-plugin</artifactId>
+    <configuration>
+        <injectString>&lt;!-- [INSERT FRAGMENT HERE] --&gt;</injectString>
+    </configuration>
 +----------+
 
  Then in your web.xml file, you need to place the tag where you want the
