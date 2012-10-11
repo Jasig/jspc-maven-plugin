@@ -202,6 +202,13 @@ abstract class CompilationMojoSupport
      */
     boolean filtering
 
+    /**
+     * Set to {@code true} to disable the plugin.
+     *
+     * @parameter expression="${jspc.skip}" default-value="false"
+     */
+    boolean skip;
+
     // Sub-class must provide
     protected abstract List getClasspathElements()
     
@@ -226,6 +233,10 @@ abstract class CompilationMojoSupport
     //
 
     void execute() {
+        if (skip) {
+            return;
+        }
+		
         boolean isWar = "war" == project.packaging
 
         if (!isWar || !includeInProject) {
