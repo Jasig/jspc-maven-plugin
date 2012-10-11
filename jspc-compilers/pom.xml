@@ -35,6 +35,7 @@
     <modules>
         <module>jspc-compiler-tomcat5</module>
         <module>jspc-compiler-tomcat6</module>
+        <module>jspc-compiler-tomcat7</module>
     </modules>
     
     <dependencies>

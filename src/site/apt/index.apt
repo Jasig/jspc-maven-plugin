@@ -41,9 +41,11 @@ JSP Compilation Support for Maven 2
  In version 2 of the JSP plugin for Maven 2, the JSP compiler implementation is pluggable.
  Currently the following compilers are supported:
 
- * {{{jspc-compilers/jspc-compiler-tomcat5/index.html}Tomcat 5 Compiler}}: Uses Tomcat 5.5.15 Jasper compiler.
+ * {{{jspc-compilers/jspc-compiler-tomcat5/index.html}Tomcat 5 Compiler}}: Uses Tomcat 5.5.23 Jasper compiler.
  
- * {{{jspc-compilers/jspc-compiler-tomcat6/index.html}Tomcat 6 Compiler}}: Uses Tomcat 6.0.18 Jasper compiler.
+ * {{{jspc-compilers/jspc-compiler-tomcat6/index.html}Tomcat 6 Compiler}}: Uses Tomcat 6.0.35 Jasper compiler.
+
+ * {{{jspc-compilers/jspc-compiler-tomcat7/index.html}Tomcat 7 Compiler}}: Uses Tomcat 6.0.30 Jasper compiler.
  
  []
 
