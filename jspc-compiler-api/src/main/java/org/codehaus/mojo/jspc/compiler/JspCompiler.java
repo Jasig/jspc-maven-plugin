@@ -34,13 +34,15 @@ public interface JspCompiler
 
     void setSmapDumped(final boolean setSmapDumped);
 
-    void setSmapSuppressed(final boolean setSmapSupressed);
+    void setSmapSuppressed(final boolean setSmapSuppressed);
 
     void setCompile(final boolean setCompile);
 
     void setValidateXml(final boolean validateXml);
 
     void setTrimSpaces(final boolean trimSpaces);
+
+    void setErrorOnUseBeanInvalidClassAttribute(final boolean error);
 
     void setVerbose(final int verbose);
 

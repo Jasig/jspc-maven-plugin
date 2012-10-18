@@ -147,42 +147,42 @@ abstract class CompilationMojoSupport
     String packageName
 
     /**
-     * Verbose level option for JcpC.
+     * Verbose level option for JspC.
      *
      * @parameter default-value="0"
      */
     int verbose
 
     /**
-     * Show Success option for JcpC.
+     * Show Success option for JspC.
      *
      * @parameter default-value="true"
      */
     boolean showSuccess
 
     /**
-     * Set Smap Dumped option for JcpC.
+     * Set Smap Dumped option for JspC.
      *
      * @parameter default-value="false"
      */
     boolean smapDumped
 
     /**
-     * Set Smap Supressed option for JcpC.
+     * Set Smap Suppressed option for JspC.
      *
      * @parameter default-value="false"
      */
-    boolean smapSupressed
+    boolean smapSuppressed
 
     /**
-     * List Errors option for JcpC.
+     * List Errors option for JspC.
      *
      * @parameter default-value="true"
      */
     boolean listErrors
 
     /**
-     * Validate XML option for JcpC.
+     * Validate XML option for JspC.
      *
      * @parameter default-value="false"
      */
@@ -208,6 +208,14 @@ abstract class CompilationMojoSupport
      * @parameter expression="${jspc.skip}" default-value="false"
      */
     boolean skip;
+
+    /**
+     * Issue an error when the value of the class attribute in a useBean action is
+     * not a valid bean class
+     *
+     * @parameter default-value="true"
+     */
+    boolean errorOnUseBeanInvalidClassAttribute
 
     // Sub-class must provide
     protected abstract List getClasspathElements()
@@ -307,14 +315,15 @@ abstract class CompilationMojoSupport
         }
         
         jspCompiler.args = args
-        log.debug("Jscp args: $args")
+        log.debug("Jspc args: $args")
         
         jspCompiler.smapDumped = smapDumped
-        jspCompiler.smapSuppressed = smapSupressed
+        jspCompiler.smapSuppressed = smapSuppressed
         jspCompiler.compile = compile
         jspCompiler.validateXml = validateXml
         jspCompiler.trimSpaces = trimSpaces
         jspCompiler.verbose = verbose
+        jspCompiler.errorOnUseBeanInvalidClassAttribute = errorOnUseBeanInvalidClassAttribute
         jspCompiler.compilerSourceVM = source
         jspCompiler.compilerTargetVM = target
         
@@ -343,7 +352,7 @@ abstract class CompilationMojoSupport
             
             jspCompiler.compile()
             
-            log.info("Compiled completed in $watch")
+            log.info("Compilation completed in $watch")
         }
         finally {
             // Set back the old classloader

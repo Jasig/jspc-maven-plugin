@@ -51,6 +51,8 @@ public class JspCompilerImpl
 
     private String compilerTarget;
 
+    private boolean errorOnUseBeanInvalidClassAttribute;
+
     public void setArgs(final String[] args) {
         this.args = args;
     }
@@ -87,6 +89,10 @@ public class JspCompilerImpl
         this.compilerTarget = target;
     }
 
+    public void setErrorOnUseBeanInvalidClassAttribute(boolean error) {
+        this.errorOnUseBeanInvalidClassAttribute = error;
+    }
+
     public void compile() throws Exception {
         JspC jspc = new JspC();
         jspc.setArgs(args);
@@ -96,6 +102,7 @@ public class JspCompilerImpl
         jspc.setValidateXml(validateXml);
         jspc.setTrimSpaces(trimSpaces);
         jspc.setVerbose(verbose);
+        jspc.setErrorOnUseBeanInvalidClassAttribute(errorOnUseBeanInvalidClassAttribute);
 
         // Fail on error - important
         jspc.setFailOnError(true);

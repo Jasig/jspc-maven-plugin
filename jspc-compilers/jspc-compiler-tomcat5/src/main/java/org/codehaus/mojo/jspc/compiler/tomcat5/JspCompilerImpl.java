@@ -45,6 +45,8 @@ public class JspCompilerImpl
 
     private boolean trimSpaces;
 
+    private boolean errorOnUseBeanInvalidClassAttribute;
+
     private int verbose;
 
     private String compilerSource;
@@ -75,6 +77,10 @@ public class JspCompilerImpl
         this.trimSpaces = trimSpaces;
     }
 
+    public void setErrorOnUseBeanInvalidClassAttribute(boolean error) {
+        this.errorOnUseBeanInvalidClassAttribute = error;
+    }
+
     public void setVerbose(final int verbose) {
         this.verbose = verbose;
     }
@@ -95,6 +101,7 @@ public class JspCompilerImpl
         jspc.setCompile(compile);
         jspc.setValidateXml(validateXml);
         jspc.setTrimSpaces(trimSpaces);
+        jspc.setErrorOnUseBeanInvalidClassAttribute(errorOnUseBeanInvalidClassAttribute);
         jspc.setVerbose(verbose);
 
         // Fail on error - important
