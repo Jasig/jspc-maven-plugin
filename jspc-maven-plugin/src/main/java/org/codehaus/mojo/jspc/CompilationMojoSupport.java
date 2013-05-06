@@ -1,18 +1,32 @@
 package org.codehaus.mojo.jspc;
 
+import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.StringReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.Reader;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.input.XmlStreamReader;
+import org.apache.commons.io.output.XmlStreamWriter;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.model.fileset.FileSet;
 import org.apache.maven.shared.model.fileset.util.FileSetManager;
 import org.codehaus.mojo.jspc.compiler.JspCompiler;
+import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.InterpolationFilterReader;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -191,13 +205,15 @@ abstract class CompilationMojoSupport extends AbstractMojo {
      * @parameter default-value="true"
      */
     boolean errorOnUseBeanInvalidClassAttribute;
-
-    // Sub-class must provide
-    protected abstract List getClasspathElements();
     
     //
     // Components
     //
+
+    /**
+     * @parameter expression="${encoding}" default-value="${project.build.sourceEncoding}"
+     */
+    private String encoding;
 
     /**
      * @parameter expression="${project}"
@@ -211,12 +227,10 @@ abstract class CompilationMojoSupport extends AbstractMojo {
      */
     private JspCompiler jspCompiler;
     
-    //
-    // Mojo
-    //
+    // Sub-class must provide
+    protected abstract List getClasspathElements();
 
-    @Override
-    public void execute() {
+    public void execute() throws MojoExecutionException, MojoFailureException {
         if (skip) {
             return;
         }
@@ -232,6 +246,7 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         }
 
         // Setup defaults (complex, can"t init from expression)
+        //TODO
         if (sources == null) {
             sources = new FileSet();
             sources.setDirectory("${project.basedir}/src/main/webapp");
@@ -277,7 +292,7 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         args.add(packageName);
         
         args.add("-classpath");
-        args.add(classpathElements.join(File.pathSeparator));
+        args.add(StringUtils.join(getClasspathElements().iterator(), File.pathSeparator));
 
         int count = 0;
         if (sources.getIncludes() != null) {
@@ -294,136 +309,156 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         jspCompiler.setArgs(args.toArray(new String[0]));
         log.debug("Jspc args: " + args);
         
-        jspCompiler.smapDumped = smapDumped
-        jspCompiler.smapSuppressed = smapSuppressed
-        jspCompiler.compile = compile
-        jspCompiler.validateXml = validateXml
-        jspCompiler.trimSpaces = trimSpaces
-        jspCompiler.verbose = verbose
-        jspCompiler.errorOnUseBeanInvalidClassAttribute = errorOnUseBeanInvalidClassAttribute
-        jspCompiler.compilerSourceVM = source
-        jspCompiler.compilerTargetVM = target
+        jspCompiler.setSmapDumped(smapDumped);
+        jspCompiler.setSmapSuppressed(smapSuppressed);
+        jspCompiler.setCompile(compile);
+        jspCompiler.setValidateXml(validateXml);
+        jspCompiler.setTrimSpaces(trimSpaces);
+        jspCompiler.setVerbose(verbose);
+        jspCompiler.setErrorOnUseBeanInvalidClassAttribute(errorOnUseBeanInvalidClassAttribute);
+        jspCompiler.setCompilerSourceVM(source);
+        jspCompiler.setCompilerTargetVM(target);
         
-        // Make directories if needed
-        ant.mkdir(dir: workingDirectory)
-        ant.mkdir(dir: project.build.directory)
-        ant.mkdir(dir: project.build.outputDirectory)
+        //TODO
+//        // Make directories if needed
+//        ant.mkdir(dir: workingDirectory)
+//        ant.mkdir(dir: project.build.directory)
+//        ant.mkdir(dir: project.build.outputDirectory)
         
         // JspC needs URLClassLoader, with tools.jar
-        def parent = Thread.currentThread().contextClassLoader
-        def cl = new JspcMojoClassLoader(parent)
-        cl.addURL(findToolsJar().toURI().toURL())
-        Thread.currentThread().setContextClassLoader(cl)
+        final ClassLoader parent = Thread.currentThread().getContextClassLoader();
+        final JspcMojoClassLoader cl = new JspcMojoClassLoader(parent);
+        cl.addURL(findToolsJar());
+        Thread.currentThread().setContextClassLoader(cl);
 
         try {
             // Show a nice message when we know how many files are included
-            if (count) {
-                log.info("Compiling $count JSP source file" + (count > 1 ? "s" : "") + " to $workingDirectory")
+            if (count > 0) {
+                log.info("Compiling " + count + " JSP source file" + (count > 1 ? "s" : "") + " to " + workingDirectory);
             }
             else {
-                log.info("Compiling JSP source files to $workingDirectory")
+                log.info("Compiling JSP source files to " + workingDirectory);
             }
             
-            def watch = new StopWatch()
-            watch.start()
+            final StopWatch watch = new StopWatch();
+            watch.start();
             
-            jspCompiler.compile()
+            jspCompiler.compile();
             
-            log.info("Compilation completed in $watch")
+            log.info("Compilation completed in " + watch);
+        }
+        catch (Exception e) {
+            throw new MojoFailureException("Failed to compile JSPS", e);
         }
         finally {
             // Set back the old classloader
-            Thread.currentThread().contextClassLoader = parent
+            Thread.currentThread().setContextClassLoader(parent);
         }
         
         // Maybe install the generated classes into the default output directory
         if (compile && isWar) {
-            ant.copy(todir: project.build.outputDirectory) {
-                fileset(dir: workingDirectory) {
-                    include(name: "**/*.class")
-                }
-            }
+            final FileSet fs = new FileSet();
+            fs.setDirectory(workingDirectory);
+            //TODO
+//            ant.copy(todir: project.build.outputDirectory) {
+//                fileset(dir: workingDirectory) {
+//                    include(name: "**/*.class")
+//                }
+//            }
         }
         
         if (isWar && includeInProject) {
-            writeWebXml()
-            project.addCompileSourceRoot(workingDirectory)
+            writeWebXml();
+            project.addCompileSourceRoot(workingDirectory);
         }
     }
     
     /**
      * Figure out where the tools.jar file lives.
      */
-    private File findToolsJar() {
-        def javaHome = new File(System.properties["java.home"])
+    private URL findToolsJar() throws MojoExecutionException {
+        final File javaHome = FileUtils.resolveFile(new File(File.pathSeparator), System.getProperty("java.home"));
         
-        def file
+        final File file;
         if (SystemUtils.IS_OS_MAC_OSX) {
-            file = new File(javaHome, "../Classes/classes.jar").canonicalFile
+            file = FileUtils.resolveFile(javaHome, "../Classes/classes.jar");
         }
         else {
-            file = new File(javaHome, "../lib/tools.jar").canonicalFile
+            file = FileUtils.resolveFile(javaHome, "../lib/tools.jar");
         }
         
-        assert file.exists() : "Missing tools.jar at: $file"
+        if (!file.exists()) {
+            throw new MojoExecutionException("Could not find tools.jar at '" + file + "' under java.home: " + javaHome);
+        }
         
-        log.debug("Using tools.jar: $file")
+        getLog().debug("Using tools.jar: " + file);
         
-        return file
+        final URI fileUri = file.toURI();
+        try {
+            return fileUri.toURL();
+        }
+        catch (MalformedURLException e) {
+            throw new MojoExecutionException("Could not generate URL from URI: " + fileUri, e);
+        }
     }
     
-    private void writeWebXml() {
-        // Read the files
-        assert inputWebXml.exists()
-        String webXml = inputWebXml.text
-
-        def m = java.util.regex.Pattern
-            .compile("<\\?xml .*encoding\\s*=\\s*["\"]([^"\"]+)["\"].*\\?>")
-            .matcher(webXml);
-        String encoding = null;
-        if (m.find()){
-            encoding = m.group(1);
+    private void writeWebXml() throws MojoExecutionException {
+        if (!inputWebXml.exists()) {
+            throw new MojoExecutionException("web.xml does not exist at: " + inputWebXml);
         }
-        if(encoding == null){
-            encoding = "UTF-8";
-        }
-        if(!encoding.equalsIgnoreCase(System.getProperty("file.encoding"))){
-            webXml = inputWebXml.getText(encoding);
+        if (!webFragmentFile.exists()) {
+            throw new MojoExecutionException("web-fragment.xml does not exist at: " + webFragmentFile);
         }
         
-        assert webFragmentFile.exists()
-        String fragmentXml = webFragmentFile.text
-        
+        final String webXml = readXmlToString(inputWebXml, filtering);
         if (webXml.indexOf(injectString) == -1) {
-            fail("Missing inject string: "$injectString" in: $inputWebXml")
+            throw new MojoExecutionException("web.xml does not contain inject string '" + injectString + "' - " + webFragmentFile);
         }
         
-        def output = StringUtils.replace(webXml, injectString, fragmentXml)
+        final String fragmentXml = readXmlToString(webFragmentFile, filtering);
+        
+        String output = StringUtils.replace(webXml, injectString, fragmentXml);
         
         // If using the default, then tack on the end of the document
-        if (injectString == DEFAULT_INJECT_STRING) {
-            output += DEFAULT_INJECT_STRING
-        }
-        
-        // Allow generated xml to be filtered
-        if (filtering) {
-            output = filter(output)
+        if (DEFAULT_INJECT_STRING.equals(injectString)) {
+            output += DEFAULT_INJECT_STRING;
         }
 
+        // Make sure parent dirs exist
+        outputWebXml.getParentFile().mkdirs();
+        
         // Write the file
-        outputWebXml.parentFile.mkdirs()
-        outputWebXml.write(output, encoding)
+        XmlStreamWriter xmlStreamWriter = null;
+        try {
+            xmlStreamWriter = new XmlStreamWriter(outputWebXml, this.encoding);
+            IOUtils.write(output, xmlStreamWriter);
+        }
+        catch (IOException e) {
+            throw new MojoExecutionException("Failed to write '" + outputWebXml + "' as XML file with default encoding: " + this.encoding, e);
+        }
+        finally {
+            IOUtils.closeQuietly(xmlStreamWriter);
+        }
     }
 
-    private String filter(String input) {
-        assert input
-        
-        def reader = new StringReader(input)
-        
-        // Setup chained readers to filter
-        reader = new InterpolationFilterReader(reader, project.properties, "${", "}")
-        reader = new InterpolationFilterReader(reader, project.properties, "@", "@")
-        
-        return reader.readLines().join("\n")
+    protected String readXmlToString(File f, boolean filtering) throws MojoExecutionException {
+        Reader reader = null;
+        try {
+            reader = new XmlStreamReader(new BufferedInputStream(new FileInputStream(f)), true, this.encoding);
+            
+            if (filtering) {
+                final Properties properties = project.getProperties();
+                reader = new InterpolationFilterReader(reader, properties, "${", "}");
+                reader = new InterpolationFilterReader(reader, properties, "@", "@");
+            }
+            
+            return IOUtils.toString(reader);
+        }
+        catch (IOException e) {
+            throw new MojoExecutionException("Failed to read '" + f + "' as XML file with default encoding: " + this.encoding, e);
+        }
+        finally {
+            IOUtils.closeQuietly(reader);
+        }
     }
 }

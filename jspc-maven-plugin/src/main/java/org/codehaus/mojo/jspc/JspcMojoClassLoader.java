@@ -56,8 +56,8 @@ public class JspcMojoClassLoader
         return url;
     }
 
-    public synchronized Class loadClass(String className) throws ClassNotFoundException {
-        Class c = findLoadedClass(className);
+    public synchronized Class<?> loadClass(String className) throws ClassNotFoundException {
+        Class<?> c = findLoadedClass(className);
 
         ClassNotFoundException ex = null;
 

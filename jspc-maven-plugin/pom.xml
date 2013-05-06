@@ -23,7 +23,7 @@
     <modelVersion>4.0.0</modelVersion>
     
     <parent>
-        <groupId>org.codehaus.mojo.jspc</groupId>
+        <groupId>org.jasig.mojo.jspc</groupId>
         <artifactId>jspc</artifactId>
         <version>2.0-alpha-4-SNAPSHOT</version>
     </parent>
@@ -45,18 +45,18 @@
         </dependency>
         
         <dependency>
-            <groupId>org.codehaus.gmaven</groupId>
-            <artifactId>gmaven-mojo</artifactId>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-project</artifactId>
         </dependency>
-
+        
         <dependency>
-            <groupId>org.codehaus.gmaven</groupId>
-            <artifactId>gmaven-plugin</artifactId>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-plugin-api</artifactId>
         </dependency>
-
+        
         <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
+            <groupId>org.apache.maven.plugin-tools</groupId>
+            <artifactId>maven-plugin-annotations</artifactId>
         </dependency>
         
         <dependency>
@@ -78,46 +78,18 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-plugin-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>descriptor</goal>
-                            <goal>helpmojo</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.gmaven</groupId>
-                <artifactId>gmaven-plugin</artifactId>
-                <version>1.4</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generateStubs</goal>
-                            <goal>compile</goal>
-                            <goal>generateTestStubs</goal>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <groupId>org.jasig.maven</groupId>
+                <artifactId>maven-site-plugin</artifactId>
                 <configuration>
-                    <providerSelection>1.5</providerSelection>
+                    <defaultMergePolicy>MERGE</defaultMergePolicy>
+                    <reportPlugins combine.children="append">
+                        <plugin>
+                            <artifactId>maven-plugin-plugin</artifactId>
+                            <version>2.9</version>
+                        </plugin>
+                    </reportPlugins>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-    
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-plugin-plugin</artifactId>
-                <version>2.4.1</version>
-            </plugin>
-        </plugins>
-    </reporting>
-
 </project>

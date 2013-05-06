@@ -1,5 +1,15 @@
 package org.codehaus.mojo.jspc;
 
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+
+/**
+ * Compile JSPs.
+ *
+ * @version $Id$
+ */
+@Mojo( name = "compile", defaultPhase = LifecyclePhase.PROCESS_CLASSES, threadSafe = true, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class CompileMojo extends CompilationMojoSupport {
 /**
  * Project classpath.

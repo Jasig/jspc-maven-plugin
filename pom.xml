@@ -16,40 +16,30 @@
     limitations under the License.
 -->
 
-<!-- $Id$ -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
-    
     <parent>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>mojo-parent</artifactId>
-        <version>30</version>
+        <groupId>org.jasig.parent</groupId>
+        <artifactId>jasig-parent</artifactId>
+        <version>34</version>
     </parent>
     
-    <groupId>org.codehaus.mojo.jspc</groupId>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.jasig.mojo.jspc</groupId>
     <artifactId>jspc</artifactId>
-    <name>JSPC Maven Support</name>
     <packaging>pom</packaging>
     <version>2.0-alpha-4-SNAPSHOT</version>
     
-    <description>
-        Provides support for JSP compilation.
-    </description>
+    <name>JSPC Maven Support</name>
+    <description>Provides support for JSP compilation.</description>
     
     <url>http://mojo.codehaus.org/jspc</url>
     
     <scm>
-        <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/jspc</connection>
-        <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/jspc</developerConnection>
-        <url>http://fisheye.codehaus.org/browse/mojo/trunk/mojo/jspc</url>
+        <connection>scm:git:git://github.com/Jasig/jspc-maven-plugin.git</connection>
+        <developerConnection>scm:git:git@github.com:Jasig/jspc-maven-plugin.git</developerConnection>
+        <url>https://github.com/Jasig/jspc-maven-plugin</url>
     </scm>
-    
-    <issueManagement>
-        <system>jira</system>
-        <url>http://jira.codehaus.org/browse/MJSPC</url>
-    </issueManagement>
     
     <developers>
         <developer>
@@ -64,9 +54,6 @@
             <id>user57</id>
             <name>Jason Dillon</name>
             <email>jason@planet57.com</email>
-            <roles>
-                <role>Avid Crack Smoker</role>
-            </roles>
         </developer>
 
         <developer>
@@ -94,60 +81,49 @@
             <timezone>+1</timezone>
         </contributor>
     </contributors>
-
-    <repositories>
-        <repository>
-            <id>apache-snapshots</id>
-            <name>Apache Snapshots Repository</name>
-            <url>http://people.apache.org/repo/m2-snapshot-repository</url>
-            <layout>default</layout>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-                <checksumPolicy>ignore</checksumPolicy>
-            </snapshots>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-    </repositories>
+    
+    <properties>
+        <project.build.sourceVersion>1.5</project.build.sourceVersion>
+        <project.build.targetVersion>1.5</project.build.targetVersion>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
     
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.codehaus.gmaven</groupId>
-                <artifactId>gmaven-mojo</artifactId>
-                <version>1.4</version>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-project</artifactId>
+                <version>2.0.11</version>
             </dependency>
 
             <dependency>
-                <groupId>org.codehaus.gmaven</groupId>
-                <artifactId>gmaven-plugin</artifactId>
-                <version>1.4</version>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-plugin-api</artifactId>
+                <version>3.0.5</version>
             </dependency>
-
+            
             <dependency>
-                <groupId>org.codehaus.groovy</groupId>
-                <artifactId>groovy-all</artifactId>
-                <version>1.7.4</version>
+                <groupId>org.apache.maven.plugin-tools</groupId>
+                <artifactId>maven-plugin-annotations</artifactId>
+                <version>3.2</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.maven.shared</groupId>
                 <artifactId>file-management</artifactId>
-                <version>1.1</version>
+                <version>1.2.1</version>
             </dependency>
             
             <dependency>
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
-                <version>2.3</version>
+                <version>2.6</version>
             </dependency>
 
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>1.4</version>
+                <version>2.4</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -157,19 +133,6 @@
         <module>jspc-compilers</module>
         <module>jspc-maven-plugin</module>
     </modules>
-    
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
     
     <profiles>
         <profile>
