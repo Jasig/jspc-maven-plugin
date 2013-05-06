@@ -10,25 +10,29 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.XmlStreamReader;
 import org.apache.commons.io.output.XmlStreamWriter;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.time.StopWatch;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.filtering.MavenFileFilter;
+import org.apache.maven.shared.filtering.MavenFileFilterRequest;
+import org.apache.maven.shared.filtering.MavenFilteringException;
 import org.apache.maven.shared.model.fileset.FileSet;
 import org.apache.maven.shared.model.fileset.util.FileSetManager;
 import org.codehaus.mojo.jspc.compiler.JspCompiler;
 import org.codehaus.plexus.util.FileUtils;
-import org.codehaus.plexus.util.InterpolationFilterReader;
+import org.codehaus.plexus.util.Scanner;
 import org.codehaus.plexus.util.StringUtils;
+import org.sonatype.plexus.build.incremental.BuildContext;
 
 abstract class CompilationMojoSupport extends AbstractMojo {
     /**
@@ -37,7 +41,7 @@ abstract class CompilationMojoSupport extends AbstractMojo {
      * @parameter expression="${project.build.directory}/jsp-source"
      * @required
      */
-    String workingDirectory;
+    File workingDirectory;
     
     /**
      * The sources of the webapp.  Default is <tt>${basedir}/src/main/webapp</tt>.
@@ -205,30 +209,38 @@ abstract class CompilationMojoSupport extends AbstractMojo {
      * @parameter default-value="true"
      */
     boolean errorOnUseBeanInvalidClassAttribute;
-    
-    //
-    // Components
-    //
 
     /**
      * @parameter expression="${encoding}" default-value="${project.build.sourceEncoding}"
      */
     private String encoding;
+    
+    //
+    // Components
+    //
+
 
     /**
-     * @parameter expression="${project}"
-     * @required
-     * @readonly
+     * The Maven project.
      */
+    @Component
     private MavenProject project;
+    
+    @Component( role = MavenFileFilter.class, hint = "default" )
+    private MavenFileFilter mavenFileFilter;
 
-    /**
-     * @component
-     */
+    @Component
+    private MavenSession session;
+    
+    @Component
+    private BuildContext buildContext;
+
+    //TODO needs to be a compiler factory to be thread safe
+    @Component
     private JspCompiler jspCompiler;
     
     // Sub-class must provide
-    protected abstract List getClasspathElements();
+    protected abstract List<String> getClasspathElements() throws MojoExecutionException;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (skip) {
@@ -270,7 +282,7 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         args.add(sources.getDirectory());
         
         args.add("-d");
-        args.add(workingDirectory);
+        args.add(workingDirectory.toString());
         
         if (javaEncoding != null) {
             args.add("-javaEncoding");
@@ -357,19 +369,26 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         
         // Maybe install the generated classes into the default output directory
         if (compile && isWar) {
-            final FileSet fs = new FileSet();
-            fs.setDirectory(workingDirectory);
-            //TODO
-//            ant.copy(todir: project.build.outputDirectory) {
-//                fileset(dir: workingDirectory) {
-//                    include(name: "**/*.class")
-//                }
-//            }
+            final Scanner scanner = buildContext.newScanner(this.workingDirectory);
+            scanner.addDefaultExcludes();
+            scanner.setIncludes(new String[] { "**/*.class" });
+            scanner.scan();
+            
+            for (final String includedFile : scanner.getIncludedFiles()) {
+                final File s = new File(this.workingDirectory, includedFile);
+                final File d = new File(this.project.getBuild().getOutputDirectory(), includedFile);
+                try {
+                    FileUtils.copyFile(s, d);
+                }
+                catch (IOException e) {
+                    throw new MojoFailureException("Failed to copy '" + s + "' to '" + d + "'", e);
+                }
+            }
         }
         
         if (isWar && includeInProject) {
             writeWebXml();
-            project.addCompileSourceRoot(workingDirectory);
+            project.addCompileSourceRoot(workingDirectory.toString());
         }
     }
     
@@ -410,12 +429,12 @@ abstract class CompilationMojoSupport extends AbstractMojo {
             throw new MojoExecutionException("web-fragment.xml does not exist at: " + webFragmentFile);
         }
         
-        final String webXml = readXmlToString(inputWebXml, filtering);
+        final String webXml = readXmlToString(inputWebXml);
         if (webXml.indexOf(injectString) == -1) {
             throw new MojoExecutionException("web.xml does not contain inject string '" + injectString + "' - " + webFragmentFile);
         }
         
-        final String fragmentXml = readXmlToString(webFragmentFile, filtering);
+        final String fragmentXml = readXmlToString(webFragmentFile);
         
         String output = StringUtils.replace(webXml, injectString, fragmentXml);
         
@@ -423,14 +442,13 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         if (DEFAULT_INJECT_STRING.equals(injectString)) {
             output += DEFAULT_INJECT_STRING;
         }
-
-        // Make sure parent dirs exist
-        outputWebXml.getParentFile().mkdirs();
         
-        // Write the file
+        
+        // Write the jsp web.xml file
+        final File workingWebXml = new File(workingDirectory, "jspweb.xml");
         XmlStreamWriter xmlStreamWriter = null;
         try {
-            xmlStreamWriter = new XmlStreamWriter(outputWebXml, this.encoding);
+            xmlStreamWriter = new XmlStreamWriter(workingWebXml, this.encoding);
             IOUtils.write(output, xmlStreamWriter);
         }
         catch (IOException e) {
@@ -439,18 +457,32 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         finally {
             IOUtils.closeQuietly(xmlStreamWriter);
         }
+
+        // Make sure parent dirs exist
+        outputWebXml.getParentFile().mkdirs();
+        
+        // Copy the file into place filtering it on the way
+        final MavenFileFilterRequest request = new MavenFileFilterRequest();
+        request.setEncoding(this.encoding);
+        request.setMavenSession(this.session);
+        request.setMavenProject(this.project);
+        request.setFiltering(this.filtering);
+
+        request.setFrom(workingWebXml);
+        request.setTo(outputWebXml);
+
+        try {
+            this.mavenFileFilter.copyFile(request);
+        }
+        catch (MavenFilteringException e) {
+            throw new MojoExecutionException(e.getMessage(), e);
+        }
     }
 
-    protected String readXmlToString(File f, boolean filtering) throws MojoExecutionException {
+    protected String readXmlToString(File f) throws MojoExecutionException {
         Reader reader = null;
         try {
             reader = new XmlStreamReader(new BufferedInputStream(new FileInputStream(f)), true, this.encoding);
-            
-            if (filtering) {
-                final Properties properties = project.getProperties();
-                reader = new InterpolationFilterReader(reader, properties, "${", "}");
-                reader = new InterpolationFilterReader(reader, properties, "@", "@");
-            }
             
             return IOUtils.toString(reader);
         }
