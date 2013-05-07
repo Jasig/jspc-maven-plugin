@@ -20,6 +20,7 @@
 package org.codehaus.mojo.jspc.compiler.tomcat6;
 
 import org.codehaus.mojo.jspc.compiler.JspCompiler;
+import org.codehaus.plexus.component.annotations.Component;
 
 import org.apache.jasper.JspC;
 
@@ -30,6 +31,7 @@ import org.apache.jasper.JspC;
  *
  * @version $Id$
  */
+@Component(role=JspCompiler.class, hint="tomcat6")
 public class JspCompilerImpl
     implements JspCompiler
 {

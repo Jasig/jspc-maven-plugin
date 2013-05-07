@@ -38,6 +38,11 @@
     
     <dependencies>
         <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-component-annotations</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>jasper</artifactId>
             <version>${tomcatVersion}</version>
@@ -86,4 +91,20 @@
         </dependency>
     </dependencies>
 
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-component-metadata</artifactId>
+            <version>1.5.5</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>generate-metadata</goal>
+                </goals>
+              </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
 </project>

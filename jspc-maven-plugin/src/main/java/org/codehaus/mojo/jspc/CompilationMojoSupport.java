@@ -22,6 +22,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.filtering.MavenFileFilter;
 import org.apache.maven.shared.filtering.MavenFileFilterRequest;
@@ -37,10 +38,8 @@ import org.sonatype.plexus.build.incremental.BuildContext;
 abstract class CompilationMojoSupport extends AbstractMojo {
     /**
      * The working directory to create the generated java source files.
-     *
-     * @parameter expression="${project.build.directory}/jsp-source"
-     * @required
      */
+    @Parameter(defaultValue="${project.build.directory}/jsp-source", required=true)
     File workingDirectory;
     
     /**
