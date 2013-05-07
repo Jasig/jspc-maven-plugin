@@ -19,36 +19,47 @@
 
 package org.codehaus.mojo.jspc.compiler;
 
+import java.io.File;
+
 /**
  * Interface to provide plugable JSP compilation.
  *
  * @version $Id$
  */
-public interface JspCompiler
-{
-    //
-    // HACK: For now just expose the same API as JspC, should eventually abstract this a little more
-    //
+public interface JspCompiler {
+    void setWebappDirectory(String webappDir);
+    
+    void setOutputDirectory(File outputDirectory);
+    
+    void setEncoding(String encoding);
+    
+    void setShowSuccess(boolean showSuccesses);
+    
+    void setListErrors(boolean listErrors);
+    
+    void setWebFragmentFile(File webFragmentFile);
+    
+    void setPackageName(String packageName);
+    
+    void setClasspath(Iterable<String> classpathElements);
 
-    void setArgs(final String[] strArgs);
+    void setSmapDumped(boolean setSmapDumped);
 
-    void setSmapDumped(final boolean setSmapDumped);
+    void setSmapSuppressed(boolean setSmapSuppressed);
 
-    void setSmapSuppressed(final boolean setSmapSuppressed);
+    void setCompile(boolean setCompile);
 
-    void setCompile(final boolean setCompile);
+    void setValidateXml(boolean validateXml);
 
-    void setValidateXml(final boolean validateXml);
+    void setTrimSpaces(boolean trimSpaces);
 
-    void setTrimSpaces(final boolean trimSpaces);
+    void setErrorOnUseBeanInvalidClassAttribute(boolean error);
 
-    void setErrorOnUseBeanInvalidClassAttribute(final boolean error);
+    void setVerbose(int verbose);
 
-    void setVerbose(final int verbose);
+    void setCompilerSourceVM(String source);
 
-    void setCompilerSourceVM(final String source);
+    void setCompilerTargetVM(String target);
 
-    void setCompilerTargetVM(final String target);
-
-    void compile() throws Exception;
+    void compile(Iterable<File> jspFiles) throws Exception;
 }

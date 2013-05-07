@@ -16,7 +16,7 @@
     limitations under the License.
 -->
 
-<!-- $Id: pom.xml 17328 2012-08-16 23:40:13Z shinsuke $ -->
+<!-- $Id$ -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
@@ -34,7 +34,6 @@
     <properties>
         <tomcatVersion>7.0.30</tomcatVersion>
         <ecjVersion>3.7.2</ecjVersion>
-        <antVersion>1.8.4</antVersion>
     </properties>
     
     <dependencies>
@@ -48,17 +47,22 @@
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-component-annotations</artifactId>
         </dependency>
+            
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
         
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.9.0</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-jasper</artifactId>
             <version>${tomcatVersion}</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.eclipse.jdt.core.compiler</groupId>
-            <artifactId>ecj</artifactId>
-            <version>${ecjVersion}</version>
         </dependency>
         
         <dependency>
@@ -96,13 +100,12 @@
             <artifactId>tomcat-annotations-api</artifactId>
             <version>${tomcatVersion}</version>
         </dependency>
-
+        
         <dependency>
-            <groupId>org.apache.ant</groupId>
-            <artifactId>ant</artifactId>
-            <version>${antVersion}</version>
+            <groupId>org.eclipse.jdt.core.compiler</groupId>
+            <artifactId>ecj</artifactId>
+            <version>${ecjVersion}</version>
         </dependency>
-
     </dependencies>
 
     <build>

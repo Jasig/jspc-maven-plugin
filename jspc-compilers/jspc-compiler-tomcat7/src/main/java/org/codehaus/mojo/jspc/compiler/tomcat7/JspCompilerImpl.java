@@ -19,100 +19,114 @@
 
 package org.codehaus.mojo.jspc.compiler.tomcat7;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.jasper.JspC;
 import org.codehaus.mojo.jspc.compiler.JspCompiler;
-import org.codehaus.plexus.component.annotations.Component;
 
 /**
- * JSP compiler for Tomcat 7.
+ * JSP compiler for Tomcat 6.
  *
- * @version $Id: JspCompilerImpl.java 6803 2008-04-21 12:04:24Z user57 $
+ * @version $Id$
  */
-@Component(role=JspCompiler.class, hint="tomcat7")
-public class JspCompilerImpl
-    implements JspCompiler
-{
-    private String[] args;
+public class JspCompilerImpl implements JspCompiler {
+    private final JspC jspc;
+    private boolean showSuccess = false;
+    private boolean listErrors = false;
+    
+    public JspCompilerImpl() {
+        jspc = new JspC();
+        jspc.setFailOnError(true);
+    }
 
-    private boolean smapDumped;
+    public void setWebappDirectory(String webappDir) {
+        jspc.setUriroot(webappDir);
+    }
 
-    private boolean smapSuppressed;
+    public void setOutputDirectory(File outputDirectory) {
+        jspc.setOutputDir(outputDirectory.getAbsolutePath());
+    }
 
-    private boolean compile;
+    public void setEncoding(String encoding) {
+        jspc.setJavaEncoding(encoding);
+    }
 
-    private boolean validateXml;
+    public void setShowSuccess(boolean showSuccess) {
+        this.showSuccess = showSuccess;
+    }
 
-    private boolean trimSpaces;
+    public void setListErrors(boolean listErrors) {
+        this.listErrors = listErrors;
+    }
 
-    private int verbose;
+    public void setWebFragmentFile(File webFragmentFile) {
+        jspc.setWebXmlFragment(webFragmentFile.getAbsolutePath());
+    }
 
-    private String compilerSource;
+    public void setPackageName(String packageName) {
+        jspc.setPackage(packageName);
+    }
 
-    private String compilerTarget;
-
-    private boolean errorOnUseBeanInvalidClassAttribute;
-
-    public void setArgs(final String[] args) {
-        this.args = args;
+    public void setClasspath(Iterable<String> classpathElements) {
+        final String classpath = StringUtils.join(classpathElements.iterator(), File.pathSeparator);
+        jspc.setClassPath(classpath);
     }
 
     public void setSmapDumped(final boolean smapDumped) {
-        this.smapDumped = smapDumped;
+        jspc.setSmapDumped(smapDumped);
     }
 
     public void setSmapSuppressed(final boolean smapSuppressed) {
-        this.smapSuppressed = smapSuppressed;
+        jspc.setSmapSuppressed(smapSuppressed);
     }
 
     public void setCompile(final boolean compile) {
-        this.compile = compile;
+        jspc.setCompile(compile);
     }
 
     public void setValidateXml(final boolean validateXml) {
-        this.validateXml = validateXml;
+        jspc.setValidateXml(validateXml);
     }
 
     public void setTrimSpaces(final boolean trimSpaces) {
-        this.trimSpaces = trimSpaces;
-    }
-
-    public void setVerbose(final int verbose) {
-        this.verbose = verbose;
-    }
-
-    public void setCompilerSourceVM(final String source) {
-        this.compilerSource = source;
-    }
-
-    public void setCompilerTargetVM(final String target) {
-        this.compilerTarget = target;
+        jspc.setTrimSpaces(trimSpaces);
     }
 
     public void setErrorOnUseBeanInvalidClassAttribute(boolean error) {
-        this.errorOnUseBeanInvalidClassAttribute = error;
+        jspc.setErrorOnUseBeanInvalidClassAttribute(error);
     }
 
-    public void compile() throws Exception {
-        JspC jspc = new JspC();
-        jspc.setArgs(args);
-        jspc.setSmapDumped(smapDumped);
-        jspc.setSmapSuppressed(smapSuppressed);
-        jspc.setCompile(compile);
-        jspc.setValidateXml(validateXml);
-        jspc.setTrimSpaces(trimSpaces);
+    public void setVerbose(final int verbose) {
         jspc.setVerbose(verbose);
-        jspc.setErrorOnUseBeanInvalidClassAttribute(errorOnUseBeanInvalidClassAttribute);
+    }
 
-        // Fail on error - important
-        jspc.setFailOnError(true);
+    public void setCompilerSourceVM(final String source) {
+        jspc.setCompilerSourceVM(source);
+    }
 
-        if (compilerSource != null) {
-            jspc.setCompilerSourceVM(compilerSource);
+    public void setCompilerTargetVM(final String target) {
+        jspc.setCompilerTargetVM(target);
+    }
+
+    public void compile(Iterable<File> jspFiles) throws Exception {
+        final List<String> args = new ArrayList<String>();
+        
+        if (showSuccess) {
+            args.add("-s");
         }
-
-        if (compilerTarget != null) {
-            jspc.setCompilerTargetVM(compilerTarget);
+        
+        if (listErrors) {
+            args.add("-l");
         }
+        
+        for (final File jspFile : jspFiles) {
+            args.add(jspFile.getAbsolutePath());
+        }
+        
+        jspc.setArgs(args.toArray(new String[args.size()]));
 
         jspc.execute();
     }

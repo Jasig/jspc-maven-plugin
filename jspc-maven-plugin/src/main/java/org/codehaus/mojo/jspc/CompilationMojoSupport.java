@@ -10,6 +10,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -31,6 +32,7 @@ import org.apache.maven.shared.filtering.MavenFilteringException;
 import org.apache.maven.shared.model.fileset.FileSet;
 import org.apache.maven.shared.model.fileset.util.FileSetManager;
 import org.codehaus.mojo.jspc.compiler.JspCompiler;
+import org.codehaus.mojo.jspc.compiler.JspCompilerFactory;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.Scanner;
 import org.codehaus.plexus.util.StringUtils;
@@ -208,9 +210,8 @@ abstract class CompilationMojoSupport extends AbstractMojo {
     @Component
     private BuildContext buildContext;
 
-    //TODO needs to be a compiler factory to be thread safe
     @Component
-    private JspCompiler jspCompiler;
+    private JspCompilerFactory jspCompilerFactory;
     
     // Sub-class must provide
     protected abstract List<String> getClasspathElements() throws MojoExecutionException;
@@ -232,6 +233,10 @@ abstract class CompilationMojoSupport extends AbstractMojo {
             log.warn("Compiled JSPs will not be added to the project and web.xml will " +
                      "not be modified because includeInProject is set to false.");
         }
+        
+        
+        final JspCompiler jspCompiler = this.jspCompilerFactory.createJspCompiler();
+        
 
         // Setup defaults (complex, can"t init from expression)
         if (sources == null) {
@@ -239,62 +244,43 @@ abstract class CompilationMojoSupport extends AbstractMojo {
             sources.setDirectory(this.defaultSourcesDirectory.getAbsolutePath());
             sources.setExcludes(Arrays.asList("WEB-INF/web.xml", "META-INF/**"));
         }
+        jspCompiler.setWebappDirectory(sources.getDirectory());
         log.debug("Source directory: " + this.sources.getDirectory());
         
-            
-        //
-        // FIXME: Need to get rid of this and add a more generic way to configure the compiler
-        //        perhaps nested configuration object for these details.  Only require the basics
-        //        in mojo parameters that apply to all
-        //
-        
-        List<String> args = new ArrayList<String>();
-        
-        args.add("-uriroot");
-        args.add(sources.getDirectory());
-        
-        args.add("-d");
-        args.add(workingDirectory.toString());
+        jspCompiler.setOutputDirectory(this.workingDirectory);
         log.debug("Output directory: " + this.workingDirectory);
         
-        if (javaEncoding != null) {
-            args.add("-javaEncoding");
-            args.add(javaEncoding);
-        }
+        jspCompiler.setEncoding(this.javaEncoding);
+        log.debug("Encoding: " + this.javaEncoding);
         
-        if (showSuccess) {
-            args.add("-s");
-        }
+        jspCompiler.setShowSuccess(this.showSuccess);
         
-        if (listErrors) {
-            args.add("-l");
-        }
+        jspCompiler.setListErrors(this.listErrors);
         
-        args.add("-webinc");
-        args.add(webFragmentFile.getAbsolutePath());
+        jspCompiler.setWebFragmentFile(webFragmentFile);
+        log.debug("Web Fragment: " + this.webFragmentFile);
         
-        args.add("-p");
-        args.add(packageName);
+        jspCompiler.setPackageName(packageName);
+        log.debug("Package Name: " + this.packageName);
         
-        args.add("-classpath");
         final List<String> classpathElements = getClasspathElements();
-        args.add(StringUtils.join(classpathElements.iterator(), File.pathSeparator));
+        jspCompiler.setClasspath(classpathElements);
         log.debug("Classpath: " + classpathElements);
-
-        int count = 0;
+        
+        final List<File> jspFiles;
         if (sources.getIncludes() != null) {
             final FileSetManager fsm = new FileSetManager();
             sources.setUseDefaultExcludes(true);
             final String[] includes = fsm.getIncludedFiles(sources);
-            count = includes.length;
+            jspFiles = new ArrayList<File>(includes.length);
                 
             for (final String it : includes) {
-                args.add(new File(sources.getDirectory(), it).toString());
+                jspFiles.add(new File(sources.getDirectory(), it));
             }
         }
-        
-        jspCompiler.setArgs(args.toArray(new String[0]));
-        log.debug("Jspc args: " + args);
+        else {
+            jspFiles = Collections.emptyList();
+        }
         
         jspCompiler.setSmapDumped(smapDumped);
         jspCompiler.setSmapSuppressed(smapSuppressed);
@@ -319,8 +305,8 @@ abstract class CompilationMojoSupport extends AbstractMojo {
 
         try {
             // Show a nice message when we know how many files are included
-            if (count > 0) {
-                log.info("Compiling " + count + " JSP source file" + (count > 1 ? "s" : "") + " to " + workingDirectory);
+            if (!jspFiles.isEmpty()) {
+                log.info("Compiling " + jspFiles.size() + " JSP source file" + (jspFiles.size() > 1 ? "s" : "") + " to " + workingDirectory);
             }
             else {
                 log.info("Compiling JSP source files to " + workingDirectory);
@@ -329,7 +315,7 @@ abstract class CompilationMojoSupport extends AbstractMojo {
             final StopWatch watch = new StopWatch();
             watch.start();
             
-            jspCompiler.compile();
+            jspCompiler.compile(jspFiles);
             
             log.info("Compilation completed in " + watch);
         }
