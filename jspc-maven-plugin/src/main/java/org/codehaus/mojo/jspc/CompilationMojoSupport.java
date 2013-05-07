@@ -9,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -36,6 +37,8 @@ import org.codehaus.plexus.util.StringUtils;
 import org.sonatype.plexus.build.incremental.BuildContext;
 
 abstract class CompilationMojoSupport extends AbstractMojo {
+    private static final String DEFAULT_INJECT_STRING = "</web-app>";
+    
     /**
      * The working directory to create the generated java source files.
      */
@@ -44,74 +47,64 @@ abstract class CompilationMojoSupport extends AbstractMojo {
     
     /**
      * The sources of the webapp.  Default is <tt>${basedir}/src/main/webapp</tt>.
-     *
-     * @parameter
      */
+    @Parameter
     FileSet sources;
+
+    /**
+     * Used if {@link #sources} is not specified
+     */
+    @Parameter(defaultValue="${project.basedir}/src/main/webapp")
+    File defaultSourcesDirectory;
     
     /**
      * The path and location to the web fragment file.
-     *
-     * @parameter expression="${project.build.directory}/web-fragment.xml"
-     * @required
      */
+    @Parameter(defaultValue="${project.build.directory}/web-fragment.xml", required=true)
     File webFragmentFile;
     
     /**
      * The path and location of the original web.xml file.
-     *
-     * @parameter expression="${basedir}/src/main/webapp/WEB-INF/web.xml"
-     * @required
      */
+    @Parameter(defaultValue="${basedir}/src/main/webapp/WEB-INF/web.xml", required=true)
     File inputWebXml;
     
     /**
      * The final path and file name of the web.xml.
-     *
-     * @parameter expression="${project.build.directory}/jspweb.xml"
-     * @required
      */
+    @Parameter(defaultValue="${project.build.directory}/jspweb.xml", required=true)
     File outputWebXml;
     
     /**
      * Character encoding.
-     *
-     * @parameter
      */
-    String javaEncoding;
+    @Parameter(property="encoding", defaultValue="${project.build.sourceEncoding}")
+    String javaEncoding = "UTF-8";
 
-    //
-    // TODO: Rename these, they are not descriptive enough
-    //
-    
     /**
      * Provide source compatibility with specified release.
-     *
-     * @parameter
      */
+    @Parameter(defaultValue="${project.build.sourceVersion}")
     String source;
 
     /**
      * Generate class files for specific VM version.
-     *
-     * @parameter
      */
+    @Parameter(defaultValue="${project.build.targetVersion}")
     String target;
 
     /**
      * Sets if you want to compile the JSP classes.
-     *
-     * @parameter default-value="true"
      */
+    @Parameter(defaultValue="true")
     boolean compile;
 
     /**
      * Set this to false if you don"t want to include the compiled JSPs
      * in your web.xml nor add the generated sources to your project"s
      * source roots.
-     *
-     * @parameter default-value="true"
      */
+    @Parameter(defaultValue="true")
     boolean includeInProject;
 
     /**
@@ -124,96 +117,77 @@ abstract class CompilationMojoSupport extends AbstractMojo {
      * &lt;!-- [INSERT FRAGMENT HERE] --&gt;
      *
      * Be aware the &lt; and &gt; are for your pom verbatim.
-     *
-     * @parameter default-value="</web-app>"
      */
+    @Parameter(defaultValue=DEFAULT_INJECT_STRING)
     String injectString;
-    
-    private static final String DEFAULT_INJECT_STRING = "</web-app>";
     
     /**
      * The package in which the jsp files will be contained.
-     *
-     * @parameter default-value="jsp"
      */
+    @Parameter(defaultValue="jsp")
     String packageName;
 
     /**
      * Verbose level option for JspC.
-     *
-     * @parameter default-value="0"
      */
+    @Parameter(defaultValue="0")
     int verbose;
 
     /**
      * Show Success option for JspC.
-     *
-     * @parameter default-value="true"
      */
+    @Parameter(defaultValue="true")
     boolean showSuccess;
 
     /**
      * Set Smap Dumped option for JspC.
-     *
-     * @parameter default-value="false"
      */
+    @Parameter(defaultValue="false")
     boolean smapDumped;
 
     /**
      * Set Smap Suppressed option for JspC.
-     *
-     * @parameter default-value="false"
      */
+    @Parameter(defaultValue="false")
     boolean smapSuppressed;
 
     /**
      * List Errors option for JspC.
-     *
-     * @parameter default-value="true"
      */
+    @Parameter(defaultValue="true")
     boolean listErrors;
 
     /**
      * Validate XML option for JspC.
-     *
-     * @parameter default-value="false"
      */
+    @Parameter(defaultValue="false")
     boolean validateXml;
 
     /**
      * Removes the spaces from the generated JSP files.
-     *
-     * @parameter default-value="true"
      */
+    @Parameter(defaultValue="true")
     boolean trimSpaces;
 
     /**
      * Provides filtering of the generated web.xml text.
-     *
-     * @parameter default-value="true"
      */
+    @Parameter(defaultValue="true")
     boolean filtering;
 
     /**
      * Set to {@code true} to disable the plugin.
-     *
-     * @parameter expression="${jspc.skip}" default-value="false"
      */
+    @Parameter(property="jspc.skip", defaultValue="false")
     boolean skip;
 
     /**
      * Issue an error when the value of the class attribute in a useBean action is
      * not a valid bean class
-     *
-     * @parameter default-value="true"
      */
+    @Parameter(defaultValue="true")
     boolean errorOnUseBeanInvalidClassAttribute;
 
-    /**
-     * @parameter expression="${encoding}" default-value="${project.build.sourceEncoding}"
-     */
-    private String encoding;
-    
     //
     // Components
     //
@@ -248,27 +222,26 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         
         final Log log = this.getLog();
         
-        boolean isWar = "war" == project.getPackaging();
+        final boolean isWar = "war".equals(project.getPackaging());
 
-        if (!isWar || !includeInProject) {
+        if (!isWar) {
             log.warn("Compiled JSPs will not be added to the project and web.xml will " +
-                     "not be modified, either because includeInProject is set to false or " +
-                     "because the project's packaging is not 'war'.");
+                     "not be modified because the project's packaging is not 'war'.");
+        }
+        if (!includeInProject) {
+            log.warn("Compiled JSPs will not be added to the project and web.xml will " +
+                     "not be modified because includeInProject is set to false.");
         }
 
         // Setup defaults (complex, can"t init from expression)
-        //TODO
         if (sources == null) {
             sources = new FileSet();
-            sources.setDirectory("${project.basedir}/src/main/webapp");
+            sources.setDirectory(this.defaultSourcesDirectory.getAbsolutePath());
+            sources.setExcludes(Arrays.asList("WEB-INF/web.xml", "META-INF/**"));
         }
+        log.debug("Source directory: " + this.sources.getDirectory());
         
-        if (log.isDebugEnabled()) {
-            log.debug("Source directory: $sources.directory");
-            log.debug("Classpath: $classpathElements");
-            log.debug("Output directory: $workingDirectory");
-        }
-
+            
         //
         // FIXME: Need to get rid of this and add a more generic way to configure the compiler
         //        perhaps nested configuration object for these details.  Only require the basics
@@ -282,6 +255,7 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         
         args.add("-d");
         args.add(workingDirectory.toString());
+        log.debug("Output directory: " + this.workingDirectory);
         
         if (javaEncoding != null) {
             args.add("-javaEncoding");
@@ -303,7 +277,9 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         args.add(packageName);
         
         args.add("-classpath");
-        args.add(StringUtils.join(getClasspathElements().iterator(), File.pathSeparator));
+        final List<String> classpathElements = getClasspathElements();
+        args.add(StringUtils.join(classpathElements.iterator(), File.pathSeparator));
+        log.debug("Classpath: " + classpathElements);
 
         int count = 0;
         if (sources.getIncludes() != null) {
@@ -330,11 +306,10 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         jspCompiler.setCompilerSourceVM(source);
         jspCompiler.setCompilerTargetVM(target);
         
-        //TODO
-//        // Make directories if needed
-//        ant.mkdir(dir: workingDirectory)
-//        ant.mkdir(dir: project.build.directory)
-//        ant.mkdir(dir: project.build.outputDirectory)
+        // Make directories if needed
+        workingDirectory.mkdirs();
+        webFragmentFile.getParentFile().mkdirs();
+        outputWebXml.getParentFile().mkdirs();
         
         // JspC needs URLClassLoader, with tools.jar
         final ClassLoader parent = Thread.currentThread().getContextClassLoader();
@@ -433,6 +408,8 @@ abstract class CompilationMojoSupport extends AbstractMojo {
             throw new MojoExecutionException("web.xml does not contain inject string '" + injectString + "' - " + webFragmentFile);
         }
         
+        getLog().debug("Injecting " + webFragmentFile + " into " + inputWebXml + " and copying to " + outputWebXml);
+        
         final String fragmentXml = readXmlToString(webFragmentFile);
         
         String output = StringUtils.replace(webXml, injectString, fragmentXml);
@@ -447,11 +424,11 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         final File workingWebXml = new File(workingDirectory, "jspweb.xml");
         XmlStreamWriter xmlStreamWriter = null;
         try {
-            xmlStreamWriter = new XmlStreamWriter(workingWebXml, this.encoding);
+            xmlStreamWriter = new XmlStreamWriter(workingWebXml, this.javaEncoding);
             IOUtils.write(output, xmlStreamWriter);
         }
         catch (IOException e) {
-            throw new MojoExecutionException("Failed to write '" + outputWebXml + "' as XML file with default encoding: " + this.encoding, e);
+            throw new MojoExecutionException("Failed to write '" + outputWebXml + "' as XML file with default encoding: " + this.javaEncoding, e);
         }
         finally {
             IOUtils.closeQuietly(xmlStreamWriter);
@@ -462,7 +439,7 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         
         // Copy the file into place filtering it on the way
         final MavenFileFilterRequest request = new MavenFileFilterRequest();
-        request.setEncoding(this.encoding);
+        request.setEncoding(this.javaEncoding);
         request.setMavenSession(this.session);
         request.setMavenProject(this.project);
         request.setFiltering(this.filtering);
@@ -481,12 +458,12 @@ abstract class CompilationMojoSupport extends AbstractMojo {
     protected String readXmlToString(File f) throws MojoExecutionException {
         Reader reader = null;
         try {
-            reader = new XmlStreamReader(new BufferedInputStream(new FileInputStream(f)), true, this.encoding);
+            reader = new XmlStreamReader(new BufferedInputStream(new FileInputStream(f)), true, this.javaEncoding);
             
             return IOUtils.toString(reader);
         }
         catch (IOException e) {
-            throw new MojoExecutionException("Failed to read '" + f + "' as XML file with default encoding: " + this.encoding, e);
+            throw new MojoExecutionException("Failed to read '" + f + "' as XML file with default encoding: " + this.javaEncoding, e);
         }
         finally {
             IOUtils.closeQuietly(reader);

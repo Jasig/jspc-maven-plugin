@@ -16,6 +16,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 
 /**
@@ -27,10 +28,8 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 public class CompileMojo extends CompilationMojoSupport {
     /**
      * Project classpath.
-     *
-     * @parameter expression="${project.compileClasspathElements}"
-     * @required
      */
+    @Parameter(defaultValue="${project.compileClasspathElements}", required=true)
     private List<String> classpathElements;
 
     protected List<String> getClasspathElements() throws MojoExecutionException {

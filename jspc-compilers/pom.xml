@@ -37,12 +37,4 @@
         <module>jspc-compiler-tomcat6</module>
         <module>jspc-compiler-tomcat7</module>
     </modules>
-    
-    <dependencies>
-        <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>jspc-compiler-api</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-    </dependencies>
 </project>

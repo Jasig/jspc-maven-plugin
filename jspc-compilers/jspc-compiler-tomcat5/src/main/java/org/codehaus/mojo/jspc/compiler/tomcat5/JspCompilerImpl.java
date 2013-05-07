@@ -20,16 +20,16 @@
 package org.codehaus.mojo.jspc.compiler.tomcat5;
 
 import org.codehaus.mojo.jspc.compiler.JspCompiler;
+import org.codehaus.plexus.component.annotations.Component;
 
 import org.apache.jasper.JspC;
 
 /**
  * JSP compiler for Tomcat 5.
  *
- * @plexus.component role="org.codehaus.mojo.jspc.compiler.JspCompiler" role-hint="tomcat5"
- *
  * @version $Id$
  */
+@Component(role=JspCompiler.class, hint="tomcat5")
 public class JspCompilerImpl
     implements JspCompiler
 {

@@ -19,17 +19,16 @@
 
 package org.codehaus.mojo.jspc.compiler.tomcat7;
 
-import org.codehaus.mojo.jspc.compiler.JspCompiler;
-
 import org.apache.jasper.JspC;
+import org.codehaus.mojo.jspc.compiler.JspCompiler;
+import org.codehaus.plexus.component.annotations.Component;
 
 /**
  * JSP compiler for Tomcat 7.
  *
- * @plexus.component role="org.codehaus.mojo.jspc.compiler.JspCompiler" role-hint="tomcat7"
- *
  * @version $Id: JspCompilerImpl.java 6803 2008-04-21 12:04:24Z user57 $
  */
+@Component(role=JspCompiler.class, hint="tomcat7")
 public class JspCompilerImpl
     implements JspCompiler
 {

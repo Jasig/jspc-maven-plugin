@@ -128,6 +128,12 @@
             
             <dependency>
                 <groupId>org.codehaus.plexus</groupId>
+                <artifactId>plexus-interpolation</artifactId>
+                <version>1.16</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.codehaus.plexus</groupId>
                 <artifactId>plexus-utils</artifactId>
                 <version>3.0.10</version>
             </dependency>
@@ -165,30 +171,44 @@
     </modules>
     
     <build>
-        <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-plugin-plugin</artifactId>
-              <version>3.2</version>
-              <configuration>
-                <!-- see http://jira.codehaus.org/browse/MNG-5346 -->
-                <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
-              </configuration>
-              <executions>
-                <execution>
-                  <id>mojo-descriptor</id>
-                  <goals>
-                    <goal>descriptor</goal>
-                  </goals>
-                </execution>
-                <execution>
-                  <id>help-goal</id>
-                  <goals>
-                    <goal>helpmojo</goal>
-                  </goals>
-                </execution>
-              </executions>
-            </plugin>
-        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.plexus</groupId>
+                    <artifactId>plexus-component-metadata</artifactId>
+                    <version>1.5.5</version>
+                    <executions>
+                      <execution>
+                        <goals>
+                          <goal>generate-metadata</goal>
+                        </goals>
+                      </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-plugin-plugin</artifactId>
+                  <version>3.2</version>
+                  <configuration>
+                    <!-- see http://jira.codehaus.org/browse/MNG-5346 -->
+                    <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+                  </configuration>
+                  <executions>
+                    <execution>
+                      <id>mojo-descriptor</id>
+                      <goals>
+                        <goal>descriptor</goal>
+                      </goals>
+                    </execution>
+                    <execution>
+                      <id>help-goal</id>
+                      <goals>
+                        <goal>helpmojo</goal>
+                      </goals>
+                    </execution>
+                  </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 </project>
