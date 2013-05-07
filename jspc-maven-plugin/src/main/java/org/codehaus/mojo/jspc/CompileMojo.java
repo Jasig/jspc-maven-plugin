@@ -37,7 +37,12 @@ public class CompileMojo extends CompilationMojoSupport {
         List<String> list = new ArrayList<String>(classpathElements.size());
         boolean tldExists = false;
         String[] tlds = new String[] { "tld" };
-        File tempJarDir = File.createTempFile("jscp-", "");
+        File tempJarDir;
+        try {
+            tempJarDir = File.createTempFile("jscp-", "");
+        } catch (IOException e) {
+            throw new MojoExecutionException("Failed to create jscp temp dir", e);
+        }
 
         try {
             tempJarDir.delete();
@@ -51,7 +56,11 @@ public class CompileMojo extends CompilationMojoSupport {
                 else if (file.isDirectory()) {
                     Collection<File> tldFiles = FileUtils.listFiles(file, tlds, true);
                     if (!tldFiles.isEmpty()) {
-                        FileUtils.copyDirectory(file, tempJarDir);
+                        try {
+                            FileUtils.copyDirectory(file, tempJarDir);
+                        } catch (IOException e) {
+                            throw new MojoExecutionException("Failed copy '" + file + "' to '" + tempJarDir + "'", e);
+                        }
                         tldExists = true;
                     }
                     //Fix for https://jira.codehaus.org/browse/MJSPC-60
@@ -66,9 +75,18 @@ public class CompileMojo extends CompilationMojoSupport {
             }
 
             if (tldExists) {
-                File tempJarFile = File.createTempFile("jscptld-", ".jar");
+                File tempJarFile;
+                try {
+                    tempJarFile = File.createTempFile("jscptld-", ".jar");
+                } catch (IOException e) {
+                    throw new MojoExecutionException("Failed to create jscptld temp file", e);
+                }
                 tempJarFile.deleteOnExit();
-                createJarArchive(tempJarFile, tempJarDir);
+                try {
+                    createJarArchive(tempJarFile, tempJarDir);
+                } catch (IOException e) {
+                    throw new MojoExecutionException("Failed create jar '" + tempJarFile + "' from '" + tempJarFile + "'", e);
+                }
                 list.add(tempJarFile.getAbsolutePath());
             }
         }
