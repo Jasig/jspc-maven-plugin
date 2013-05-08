@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -30,7 +31,6 @@ import org.apache.maven.shared.filtering.MavenFileFilter;
 import org.apache.maven.shared.filtering.MavenFileFilterRequest;
 import org.apache.maven.shared.filtering.MavenFilteringException;
 import org.apache.maven.shared.model.fileset.FileSet;
-import org.apache.maven.shared.model.fileset.util.FileSetManager;
 import org.codehaus.mojo.jspc.compiler.JspCompiler;
 import org.codehaus.mojo.jspc.compiler.JspCompilerFactory;
 import org.codehaus.plexus.util.FileUtils;
@@ -48,7 +48,7 @@ abstract class CompilationMojoSupport extends AbstractMojo {
     File workingDirectory;
     
     /**
-     * The sources of the webapp.  Default is <tt>${basedir}/src/main/webapp</tt>.
+     * The sources of the webapp. If not specified all files under {@link #defaultSourcesDirectory} are used
      */
     @Parameter
     FileSet sources;
@@ -236,7 +236,6 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         
         
         final JspCompiler jspCompiler = this.jspCompilerFactory.createJspCompiler();
-        
 
         // Setup defaults (complex, can"t init from expression)
         if (sources == null) {
@@ -244,6 +243,7 @@ abstract class CompilationMojoSupport extends AbstractMojo {
             sources.setDirectory(this.defaultSourcesDirectory.getAbsolutePath());
             sources.setExcludes(Arrays.asList("WEB-INF/web.xml", "META-INF/**"));
         }
+
         jspCompiler.setWebappDirectory(sources.getDirectory());
         log.debug("Source directory: " + this.sources.getDirectory());
         
@@ -269,11 +269,14 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         
         final List<File> jspFiles;
         if (sources.getIncludes() != null) {
-            final FileSetManager fsm = new FileSetManager();
-            sources.setUseDefaultExcludes(true);
-            final String[] includes = fsm.getIncludedFiles(sources);
+            //Always need to get a full list of JSP files as incremental builds would result in an invalid web.xml
+            final Scanner scanner = this.buildContext.newScanner(new File(sources.getDirectory()), true);
+            scanner.setIncludes(sources.getIncludesArray());
+            scanner.setExcludes(sources.getExcludesArray());
+            scanner.addDefaultExcludes();
+            
+            final String[] includes = scanner.getIncludedFiles();
             jspFiles = new ArrayList<File>(includes.length);
-                
             for (final String it : includes) {
                 jspFiles.add(new File(sources.getDirectory(), it));
             }
@@ -327,6 +330,11 @@ abstract class CompilationMojoSupport extends AbstractMojo {
             Thread.currentThread().setContextClassLoader(parent);
         }
         
+        //Notify the build context that the jspFiles have been modified by the jsp compiler
+        for (final File jspFile : jspFiles) {
+            this.buildContext.refresh(jspFile);
+        }
+        
         // Maybe install the generated classes into the default output directory
         if (compile && isWar) {
             final Scanner scanner = buildContext.newScanner(this.workingDirectory);
@@ -337,11 +345,16 @@ abstract class CompilationMojoSupport extends AbstractMojo {
             for (final String includedFile : scanner.getIncludedFiles()) {
                 final File s = new File(this.workingDirectory, includedFile);
                 final File d = new File(this.project.getBuild().getOutputDirectory(), includedFile);
+                OutputStream fos = null;
                 try {
-                    FileUtils.copyFile(s, d);
+                    fos = this.buildContext.newFileOutputStream(d);
+                    org.apache.commons.io.FileUtils.copyFile(s, fos);
                 }
                 catch (IOException e) {
                     throw new MojoFailureException("Failed to copy '" + s + "' to '" + d + "'", e);
+                }
+                finally {
+                    IOUtils.closeQuietly(fos);
                 }
             }
         }
@@ -358,18 +371,21 @@ abstract class CompilationMojoSupport extends AbstractMojo {
     private URL findToolsJar() throws MojoExecutionException {
         final File javaHome = FileUtils.resolveFile(new File(File.pathSeparator), System.getProperty("java.home"));
         
-        final File file;
+        final List<File> toolsPaths = new ArrayList<File>();
+        
+        File file = null;
         if (SystemUtils.IS_OS_MAC_OSX) {
             file = FileUtils.resolveFile(javaHome, "../Classes/classes.jar");
+            toolsPaths.add(file);
         }
-        else {
+        if (file == null || !file.exists()) {
             file = FileUtils.resolveFile(javaHome, "../lib/tools.jar");
+            toolsPaths.add(file);
         }
         
         if (!file.exists()) {
-            throw new MojoExecutionException("Could not find tools.jar at '" + file + "' under java.home: " + javaHome);
+            throw new MojoExecutionException("Could not find tools.jar at " + toolsPaths + " under java.home: " + javaHome);
         }
-        
         getLog().debug("Using tools.jar: " + file);
         
         final URI fileUri = file.toURI();
@@ -404,7 +420,6 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         if (DEFAULT_INJECT_STRING.equals(injectString)) {
             output += DEFAULT_INJECT_STRING;
         }
-        
         
         // Write the jsp web.xml file
         final File workingWebXml = new File(workingDirectory, "jspweb.xml");
