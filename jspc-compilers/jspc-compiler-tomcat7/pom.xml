@@ -32,8 +32,7 @@
     <name>JSPC Compiler for Tomcat 7</name>
 
     <properties>
-        <tomcatVersion>7.0.30</tomcatVersion>
-        <ecjVersion>3.7.2</ecjVersion>
+        <tomcatVersion>7.0.39</tomcatVersion>
     </properties>
     
     <dependencies>
@@ -67,44 +66,8 @@
         
         <dependency>
             <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-jasper-el</artifactId>
-            <version>${tomcatVersion}</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-juli</artifactId>
-            <version>${tomcatVersion}</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-servlet-api</artifactId>
-            <version>${tomcatVersion}</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-jsp-api</artifactId>
-            <version>${tomcatVersion}</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-el-api</artifactId>
-            <version>${tomcatVersion}</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-annotations-api</artifactId>
             <version>${tomcatVersion}</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.eclipse.jdt.core.compiler</groupId>
-            <artifactId>ecj</artifactId>
-            <version>${ecjVersion}</version>
         </dependency>
     </dependencies>
 
