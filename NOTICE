@@ -1,0 +1,99 @@
+Copyright 2010, JA-SIG, Inc.
+This project includes software developed by Jasig.
+http://www.jasig.org/
+
+Licensed under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at:
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on
+an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied. See the License for the
+specific language governing permissions and limitations
+under the License.
+
+
+  Aether :: API under Eclipse Public License, Version 1.0
+  Aether :: Implementation under Eclipse Public License, Version 1.0
+  Aether :: SPI under Eclipse Public License, Version 1.0
+  Aether :: Utilities under Eclipse Public License, Version 1.0
+  annotations-api under Apache License, Version 2.0
+  Apache Ant Core under The Apache Software License, Version 2.0
+  Apache Ant Launcher under The Apache Software License, Version 2.0
+  catalina under Apache License, Version 2.0
+  classworlds under BSD Style License
+  Commons IO under The Apache Software License, Version 2.0
+  Commons Lang under The Apache Software License, Version 2.0
+  Commons Logging under The Apache Software License, Version 2.0
+  Default Plexus Container under Apache License, Version 2.0
+  Eclipse ECJ under Eclipse Public License v1.0
+  Eclipse JDT Core under Eclipse Public License v1.0
+  EL under The Apache Software License, Version 2.0
+  el-api under Apache License, Version 2.0
+  FindBugs-jsr305 under The Apache Software License, Version 2.0
+  Hamcrest Core under New BSD License
+  jasper under Apache License, Version 2.0
+  jasper-compiler under The Apache Software License, Version 2.0
+  jasper-compiler-jdt under The Apache Software License, Version 2.0
+  jasper-el under Apache License, Version 2.0
+  jasper-runtime under The Apache Software License, Version 2.0
+  jsp-api under Apache License, Version 2.0
+  JSPC Compiler API under Apache License Version 2.0
+  JSPC Compiler for Tomcat 5 under Apache License Version 2.0
+  JSPC Compiler for Tomcat 6 under Apache License Version 2.0
+  JSPC Compiler for Tomcat 7 under Apache License Version 2.0
+  JSPC Compilers under Apache License Version 2.0
+  JSPC Maven Plugin under Apache License Version 2.0
+  JSPC Maven Support under Apache License Version 2.0
+  juli under Apache License, Version 2.0
+  JUnit under Common Public License Version 1.0
+  Maven Aether Provider under The Apache Software License, Version 2.0
+  Maven Artifact under The Apache Software License, Version 2.0
+  Maven Artifact Manager under The Apache Software License, Version 2.0
+  Maven Core under The Apache Software License, Version 2.0
+  Maven File Management API under The Apache Software License, Version 2.0
+  Maven Filtering under The Apache Software License, Version 2.0
+  Maven Local Settings Model under The Apache Software License, Version 2.0
+  Maven Model under The Apache Software License, Version 2.0
+  Maven Model Builder under The Apache Software License, Version 2.0
+  Maven Plugin API under The Apache Software License, Version 2.0
+  Maven Plugin Java 5 Annotations under The Apache Software License, Version 2.0
+  Maven Plugin Registry Model under The Apache Software License, Version 2.0
+  Maven Profile Model under The Apache Software License, Version 2.0
+  Maven Project Builder under The Apache Software License, Version 2.0
+  Maven Repository Metadata Model under The Apache Software License, Version 2.0
+  Maven Settings Builder under The Apache Software License, Version 2.0
+  Maven Shared I/O API under The Apache Software License, Version 2.0
+  Maven Shared Utils under The Apache Software License, Version 2.0
+  Maven Verifier Component under The Apache Software License, Version 2.0
+  Maven Wagon API under The Apache Software License, Version 2.0
+  Plexus :: Component Annotations under The Apache Software License, Version 2.0
+  Plexus Cipher: encryption/decryption Component under Apache Public License 2.0
+  Plexus Classworlds under The Apache Software License, Version 2.0
+  Plexus Common Utilities under The Apache Software License, Version 2.0
+  Plexus Interpolation API under The Apache Software License, Version 2.0
+  Plexus Security Dispatcher Component under Apache Public License 2.0
+  plexus-build-api under Apache Public License 2.0
+  servlet-api under Apache License, Version 2.0
+  Sisu Guava - Core Library under The Apache Software License, Version 2.0
+  Sisu Guice - Core Library under The Apache Software License, Version 2.0
+  Sisu-Inject-Bean : Aggregate OSGi bundle under The Apache Software License, Version 2.0 or Eclipse Public License, Version 1.0
+  Sisu-Inject-Plexus : Aggregate OSGi bundle under Eclipse Public License, Version 1.0
+  tomcat-annotations-api under Apache License, Version 2.0
+  tomcat-api under Apache License, Version 2.0
+  tomcat-el-api under Apache License, Version 2.0
+  tomcat-jasper under Apache License, Version 2.0
+  tomcat-jasper-el under Apache License, Version 2.0
+  tomcat-jsp-api under Apache License, Version 2.0 and
+        Common Development And Distribution License (CDDL) Version 1.0
+  tomcat-juli under Apache License, Version 2.0
+  tomcat-servlet-api under Apache License, Version 2.0 and
+        Common Development And Distribution License (CDDL) Version 1.0
+  tomcat-util under Apache License, Version 2.0
+
+ 
+This project also includes code under copywrite of the following:
+ Jeff Genender - Copyright 2005 

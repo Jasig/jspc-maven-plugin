@@ -91,6 +91,12 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>1.1.2</version>
+            </dependency>
+        
+            <dependency>
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven-project</artifactId>
                 <version>2.0.11</version>
@@ -227,14 +233,20 @@
                   </executions>
                 </plugin>
                 <plugin>
+                    <groupId>org.jasig.maven</groupId>
+                    <artifactId>maven-notice-plugin</artifactId>
+                    <configuration>
+                        <noticeTemplate>NOTICE.template</noticeTemplate>
+                    </configuration>
+                </plugin>
+                <plugin>
                   <groupId>com.mycila.maven-license-plugin</groupId>
                   <artifactId>maven-license-plugin</artifactId>
                   <configuration>
                     <aggregate>true</aggregate>
                     <excludes>
-                        <exclude>LICENSE.txt</exclude>
+                        <exclude>**/NOTICE</exclude>
                         <exclude>LICENSE</exclude>
-                        <exclude>NOTICE</exclude>
                         <exclude>short-license-header.txt</exclude>
                         
                         <!-- Exclude license updates for files copied over from the original codehaus project -->
