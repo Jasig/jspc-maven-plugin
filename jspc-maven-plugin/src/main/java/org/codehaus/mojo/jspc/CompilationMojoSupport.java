@@ -275,6 +275,8 @@ abstract class CompilationMojoSupport extends AbstractMojo {
             scanner.setExcludes(sources.getExcludesArray());
             scanner.addDefaultExcludes();
             
+            scanner.scan();
+            
             final String[] includes = scanner.getIncludedFiles();
             jspFiles = new ArrayList<File>(includes.length);
             for (final String it : includes) {
@@ -345,6 +347,7 @@ abstract class CompilationMojoSupport extends AbstractMojo {
             for (final String includedFile : scanner.getIncludedFiles()) {
                 final File s = new File(this.workingDirectory, includedFile);
                 final File d = new File(this.project.getBuild().getOutputDirectory(), includedFile);
+                d.getParentFile().mkdirs();
                 OutputStream fos = null;
                 try {
                     fos = this.buildContext.newFileOutputStream(d);
