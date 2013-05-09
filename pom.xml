@@ -214,44 +214,45 @@
                   <configuration>
                     <aggregate>true</aggregate>
                     <excludes>
-                      <exclude>LICENSE</exclude>
-                      <exclude>NOTICE</exclude>
-                      <exclude>short-license-header.txt</exclude>
-                      
-                      <!-- Exclude license updates for files copied over from the original codehaus project -->
-                      <exclude>jspc-compiler-api/pom.xml</exclude>
-                      <exclude>jspc-compiler-api/src/main/java/org/codehaus/mojo/jspc/compiler/JspCompiler.java</exclude>
-                      <exclude>jspc-compiler-api/src/site/apt/index.apt</exclude>
-                      <exclude>jspc-compiler-api/src/site/site.xml</exclude>
-                      <exclude>jspc-compilers/jspc-compiler-tomcat5/pom.xml</exclude>
-                      <exclude>jspc-compilers/jspc-compiler-tomcat5/src/main/java/org/codehaus/mojo/jspc/compiler/tomcat5/JspCompilerImpl.java</exclude>
-                      <exclude>jspc-compilers/jspc-compiler-tomcat5/src/site/apt/index.apt</exclude>
-                      <exclude>jspc-compilers/jspc-compiler-tomcat5/src/site/site.xml</exclude>
-                      <exclude>jspc-compilers/jspc-compiler-tomcat6/pom.xml</exclude>
-                      <exclude>jspc-compilers/jspc-compiler-tomcat6/src/main/java/org/codehaus/mojo/jspc/compiler/tomcat6/JspCompilerImpl.java</exclude>
-                      <exclude>jspc-compilers/jspc-compiler-tomcat6/src/site/apt/index.apt</exclude>
-                      <exclude>jspc-compilers/jspc-compiler-tomcat6/src/site/site.xml</exclude>
-                      <exclude>jspc-compilers/jspc-compiler-tomcat7/pom.xml</exclude>
-                      <exclude>jspc-compilers/jspc-compiler-tomcat7/src/main/java/org/codehaus/mojo/jspc/compiler/tomcat7/JspCompilerImpl.java</exclude>
-                      <exclude>jspc-compilers/jspc-compiler-tomcat7/src/site/apt/index.apt</exclude>
-                      <exclude>jspc-compilers/jspc-compiler-tomcat7/src/site/site.xml</exclude>
-                      <exclude>jspc-compilers/pom.xml</exclude>
-                      <exclude>jspc-compilers/src/site/apt/index.apt</exclude>
-                      <exclude>jspc-compilers/src/site/site.xml</exclude>
-                      <exclude>jspc-maven-plugin/pom.xml</exclude>
-                      <exclude>jspc-maven-plugin/src/main/java/org/codehaus/mojo/jspc/JspcMojoClassLoader.java</exclude>
-                      <exclude>jspc-maven-plugin/src/site/apt/index.apt</exclude>
-                      <exclude>jspc-maven-plugin/src/site/apt/usage.apt</exclude>
-                      <exclude>jspc-maven-plugin/src/site/site.xml</exclude>
-                      <exclude>jspc-maven-plugin/src/test/resources/jspc-5/pom.xml</exclude>
-                      <exclude>jspc-maven-plugin/src/test/resources/jspc-5/src/main/webapp/WEB-INF/web.xml</exclude>
-                      <exclude>jspc-maven-plugin/src/test/resources/jspc-6/pom.xml</exclude>
-                      <exclude>jspc-maven-plugin/src/test/resources/jspc-6/src/main/webapp/WEB-INF/web.xml</exclude>
-                      <exclude>jspc-maven-plugin/src/test/resources/jspc-7/pom.xml</exclude>
-                      <exclude>jspc-maven-plugin/src/test/resources/jspc-7/src/main/webapp/WEB-INF/web.xml</exclude>
-                      <exclude>pom.xml</exclude>
-                      <exclude>src/site/apt/index.apt</exclude>
-                      <exclude>src/site/site.xml</exclude>
+                        <exclude>LICENSE.txt</exclude>
+                        <exclude>LICENSE</exclude>
+                        <exclude>NOTICE</exclude>
+                        <exclude>short-license-header.txt</exclude>
+                        
+                        <!-- Exclude license updates for files copied over from the original codehaus project -->
+                        <exclude>jspc-compiler-api/pom.xml</exclude>
+                        <exclude>jspc-compiler-api/src/main/java/org/codehaus/mojo/jspc/compiler/JspCompiler.java</exclude>
+                        <exclude>jspc-compiler-api/src/site/apt/index.apt</exclude>
+                        <exclude>jspc-compiler-api/src/site/site.xml</exclude>
+                        <exclude>jspc-compilers/jspc-compiler-tomcat5/pom.xml</exclude>
+                        <exclude>jspc-compilers/jspc-compiler-tomcat5/src/main/java/org/codehaus/mojo/jspc/compiler/tomcat5/JspCompilerImpl.java</exclude>
+                        <exclude>jspc-compilers/jspc-compiler-tomcat5/src/site/apt/index.apt</exclude>
+                        <exclude>jspc-compilers/jspc-compiler-tomcat5/src/site/site.xml</exclude>
+                        <exclude>jspc-compilers/jspc-compiler-tomcat6/pom.xml</exclude>
+                        <exclude>jspc-compilers/jspc-compiler-tomcat6/src/main/java/org/codehaus/mojo/jspc/compiler/tomcat6/JspCompilerImpl.java</exclude>
+                        <exclude>jspc-compilers/jspc-compiler-tomcat6/src/site/apt/index.apt</exclude>
+                        <exclude>jspc-compilers/jspc-compiler-tomcat6/src/site/site.xml</exclude>
+                        <exclude>jspc-compilers/jspc-compiler-tomcat7/pom.xml</exclude>
+                        <exclude>jspc-compilers/jspc-compiler-tomcat7/src/main/java/org/codehaus/mojo/jspc/compiler/tomcat7/JspCompilerImpl.java</exclude>
+                        <exclude>jspc-compilers/jspc-compiler-tomcat7/src/site/apt/index.apt</exclude>
+                        <exclude>jspc-compilers/jspc-compiler-tomcat7/src/site/site.xml</exclude>
+                        <exclude>jspc-compilers/pom.xml</exclude>
+                        <exclude>jspc-compilers/src/site/apt/index.apt</exclude>
+                        <exclude>jspc-compilers/src/site/site.xml</exclude>
+                        <exclude>jspc-maven-plugin/pom.xml</exclude>
+                        <exclude>jspc-maven-plugin/src/main/java/org/codehaus/mojo/jspc/JspcMojoClassLoader.java</exclude>
+                        <exclude>jspc-maven-plugin/src/site/apt/index.apt</exclude>
+                        <exclude>jspc-maven-plugin/src/site/apt/usage.apt</exclude>
+                        <exclude>jspc-maven-plugin/src/site/site.xml</exclude>
+                        <exclude>jspc-maven-plugin/src/test/resources/jspc-5/pom.xml</exclude>
+                        <exclude>jspc-maven-plugin/src/test/resources/jspc-5/src/main/webapp/WEB-INF/web.xml</exclude>
+                        <exclude>jspc-maven-plugin/src/test/resources/jspc-6/pom.xml</exclude>
+                        <exclude>jspc-maven-plugin/src/test/resources/jspc-6/src/main/webapp/WEB-INF/web.xml</exclude>
+                        <exclude>jspc-maven-plugin/src/test/resources/jspc-7/pom.xml</exclude>
+                        <exclude>jspc-maven-plugin/src/test/resources/jspc-7/src/main/webapp/WEB-INF/web.xml</exclude>
+                        <exclude>pom.xml</exclude>
+                        <exclude>src/site/apt/index.apt</exclude>
+                        <exclude>src/site/site.xml</exclude>
                     </excludes>
                   </configuration>
                 </plugin>

@@ -37,4 +37,16 @@
         <module>jspc-compiler-tomcat6</module>
         <module>jspc-compiler-tomcat7</module>
     </modules>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <configuration>
+                   <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
