@@ -31,5 +31,5 @@ Introduction
  JSP compiler implementations and requires some additional <<<pom.xml>>> configuration
  to work correctly.
  
- Please review the {{{usage.html}plugin usage}} guide for more details.
+ Please review the {{{./usage.html}plugin usage}} guide for more details.
 

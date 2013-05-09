@@ -27,6 +27,3 @@ Introduction
 
  Provides the basic interface for JSP compiler implementations.
 
- <<NOTE:>> This module is currently in flux and will be changed and revised 
- before the official 2.0 release.
-

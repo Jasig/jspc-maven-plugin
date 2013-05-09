@@ -37,7 +37,7 @@ Usage
 
 +----------+
 <plugin>
-    <groupId>org.jasig.jspc</groupId>
+    <groupId>org.jasig.mojo.jspc</groupId>
     <artifactId>jspc-maven-plugin</artifactId>
     <executions>
         <execution>
@@ -50,7 +50,7 @@ Usage
     <!-- Use the Tomcat 6 JSP compiler -->
     <dependencies>
         <dependency>
-            <groupId>org.jasig.jspc</groupId>
+            <groupId>org.jasig.mojo.jspc</groupId>
             <artifactId>jspc-compiler-tomcat6</artifactId>
         </dependency>
     </dependencies>
@@ -84,7 +84,7 @@ Usage
 
 +----------+
 <plugin>
-    <groupId>org.jasig.jspc</groupId>
+    <groupId>org.jasig.mojo.jspc</groupId>
     <artifactId>jspc-maven-plugin</artifactId>
     <configuration>
         <injectString>&lt;!-- [INSERT FRAGMENT HERE] --&gt;</injectString>
