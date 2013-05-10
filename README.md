@@ -1,5 +1,5 @@
 ### Info
-This is a fork of the [Codehaus jspc-maven-plugin](http://mojo.codehaus.org/jspc/jspc-maven-plugin/) that resolves some long standing issues and gets the Tomcat 7 support released.
+A Maven plugin that compiles JSPs into class files, copies these into the final artifact, and updates the web.xml to reference the compiled classes. This is a fork of the [Codehaus jspc-maven-plugin](http://mojo.codehaus.org/jspc/jspc-maven-plugin/) that resolves some long standing issues and gets the Tomcat 7 support released.
 
 ### Usage
 See the [Maven Project Documentation](http://developer.jasig.org/projects/jspc-maven-plugin/2.0.0/jspc-maven-plugin/plugin-info.html) for goal documentation.
