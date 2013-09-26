@@ -27,7 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.codehaus.mojo.jspc.compiler.JspCompiler;
 
 /**
- * JSP compiler for Tomcat 6.
+ * JSP compiler for Tomcat 7. Supports multi-threaded compilation.
  *
  * @version $Id$
  */

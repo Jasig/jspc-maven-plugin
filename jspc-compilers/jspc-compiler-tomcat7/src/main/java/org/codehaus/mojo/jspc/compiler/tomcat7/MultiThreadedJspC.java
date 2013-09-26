@@ -153,7 +153,9 @@ public class MultiThreadedJspC extends JspC {
 
            // No explicit pages, we'll process all .jsp in the webapp
            if (pages.size() == 0) {
+               long start = System.currentTimeMillis();
                scanFiles(uriRootF);
+               log.info("scanned for jsp files in " + (System.currentTimeMillis() - start) + "ms"); 
            }
 
            initWebXml();
@@ -187,7 +189,9 @@ public class MultiThreadedJspC extends JspC {
                executor.execute(new Runnable() {
                 public void run() {
                     try {
+                        long start = System.currentTimeMillis();
                         processFile(jspToCompile);
+                        log.info("compiled file " + jspToCompile + " in " + (System.currentTimeMillis() - start) + "ms");
                     } catch (JasperException je) {
                         errorCollector.add(je);
                     }

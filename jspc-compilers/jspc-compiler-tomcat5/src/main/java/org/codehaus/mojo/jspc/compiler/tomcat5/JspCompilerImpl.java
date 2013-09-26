@@ -28,7 +28,7 @@ import org.apache.jasper.JspC;
 import org.codehaus.mojo.jspc.compiler.JspCompiler;
 
 /**
- * JSP compiler for Tomcat 5.
+ * JSP compiler for Tomcat 5. Does NOT support multi-threaded compilation.
  *
  * @version $Id$
  */

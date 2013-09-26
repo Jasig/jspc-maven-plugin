@@ -41,11 +41,18 @@ JSP Compilation Support for Maven
  In version 2 of the JSP plugin for Maven 2, the JSP compiler implementation is pluggable.
  Currently the following compilers are supported:
 
- * {{{./jspc-compilers/jspc-compiler-tomcat5/index.html}Tomcat 5 Compiler}}: Uses Tomcat 5.5.23 Jasper compiler.
+ * {{{./jspc-compilers/jspc-compiler-tomcat5/index.html}Tomcat 5 Compiler}}: Uses Tomcat 5.5.23 Jasper compiler. (Does NOT support multi-threaded compilation)
  
- * {{{./jspc-compilers/jspc-compiler-tomcat6/index.html}Tomcat 6 Compiler}}: Uses Tomcat 6.0.37 Jasper compiler.
+ * {{{./jspc-compilers/jspc-compiler-tomcat6/index.html}Tomcat 6 Compiler}}: Uses Tomcat 6.0.37 Jasper compiler. (Supports multi-threaded compilation)
 
- * {{{./jspc-compilers/jspc-compiler-tomcat7/index.html}Tomcat 7 Compiler}}: Uses Tomcat 6.0.39 Jasper compiler.
+ * {{{./jspc-compilers/jspc-compiler-tomcat7/index.html}Tomcat 7 Compiler}}: Uses Tomcat 7.0.39 Jasper compiler. (Supports multi-threaded compilation)
  
  []
 
+* Multi-threaded compilation
+
+Some compilers (Tomcat6/7) support compiling the jsps with multiple threads. 
+
+The number of threads is controlled by the 'compileThreads' parameter 
+
+The maximum time allowed for compilation to finish is controlled by the 'compilationTimeout' parameter, specified in minutes.
