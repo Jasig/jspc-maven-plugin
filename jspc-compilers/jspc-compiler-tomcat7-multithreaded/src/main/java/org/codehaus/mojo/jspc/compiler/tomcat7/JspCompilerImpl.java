@@ -17,28 +17,27 @@
  * under the License.
  */
 
-package org.codehaus.mojo.jspc.compiler.tomcat5;
+package org.codehaus.mojo.jspc.compiler.tomcat7;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.jasper.JspC;
 import org.codehaus.mojo.jspc.compiler.JspCompiler;
 
 /**
- * JSP compiler for Tomcat 5.
+ * JSP compiler for Tomcat 6.
  *
  * @version $Id$
  */
 public class JspCompilerImpl implements JspCompiler {
-    private final JspC jspc;
+    private final MultiThreadedJspC jspc;
     private boolean showSuccess = false;
     private boolean listErrors = false;
     
     public JspCompilerImpl() {
-        jspc = new JspC();
+        jspc = new MultiThreadedJspC();
         jspc.setFailOnError(true);
     }
 
@@ -126,21 +125,9 @@ public class JspCompilerImpl implements JspCompiler {
             args.add(jspFile.getAbsolutePath());
         }
         
+        jspc.setThreads(Integer.getInteger("jspc.threads", 1));
         jspc.setArgs(args.toArray(new String[args.size()]));
 
         jspc.execute();
-    }
-
-    // ignored, multithreading not supported on tomcat5
-    public void setCompileThreads(int threads) {
-        if (threads > 1) {
-            for (int i = 0; i < 3; i++) {
-                System.out.println("WARN: Multi-threaded compilation not supported with tomcat5 compiler");
-            }
-        }
-    }
-
-    // ignored, multithreading not supported on tomcat5
-    public void setCompileTimeout(long timeout) {
     }
 }
