@@ -88,7 +88,7 @@ public class JspCompilerImpl implements JspCompiler {
     }
 
     public void setValidateXml(final boolean validateXml) {
-        jspc.setValidateXml(validateXml);
+        //jspc.setValidateXml(validateXml);
     }
 
     public void setTrimSpaces(final boolean trimSpaces) {
