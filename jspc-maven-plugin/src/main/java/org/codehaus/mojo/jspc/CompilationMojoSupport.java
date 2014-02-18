@@ -208,6 +208,31 @@ abstract class CompilationMojoSupport extends AbstractMojo {
     @Parameter(defaultValue="true")
     boolean errorOnUseBeanInvalidClassAttribute;
 
+    /**
+     * Set Caching option for JspC.
+     */
+    @Parameter(defaultValue="true")
+    boolean caching;
+
+    /**
+     * Determines whether text strings are to be generated as char arrays,
+     * which improves performance in some cases.
+     */
+    @Parameter(defaultValue="false")
+    boolean genStringAsCharArray;
+
+    /**
+     * Set Pooling Enabled option for JspC.
+     */
+    @Parameter(defaultValue="true")
+    boolean poolingEnabled;
+
+    /**
+     * Set Class Debug Enabled option for JspC.
+     */
+    @Parameter(defaultValue="true")
+    boolean classDebugInfo;
+
     //
     // Components
     //
@@ -314,6 +339,10 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         jspCompiler.setErrorOnUseBeanInvalidClassAttribute(errorOnUseBeanInvalidClassAttribute);
         jspCompiler.setCompilerSourceVM(source);
         jspCompiler.setCompilerTargetVM(target);
+        jspCompiler.setCaching(caching);
+        jspCompiler.setGenStringAsCharArray(genStringAsCharArray);
+        jspCompiler.setPoolingEnabled(poolingEnabled);
+        jspCompiler.setClassDebugInfo(classDebugInfo);
         
         // Make directories if needed
         workingDirectory.mkdirs();
