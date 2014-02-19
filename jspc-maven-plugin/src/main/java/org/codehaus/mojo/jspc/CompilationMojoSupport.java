@@ -201,6 +201,9 @@ abstract class CompilationMojoSupport extends AbstractMojo {
     @Parameter(property="jspc.skip", defaultValue="false")
     boolean skip;
 
+    @Parameter(property="eLInterpreterClass")
+    String eLInterpreterClass;
+
     /**
      * Issue an error when the value of the class attribute in a useBean action is
      * not a valid bean class
@@ -284,6 +287,11 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         final List<String> classpathElements = getClasspathElements();
         jspCompiler.setClasspath(classpathElements);
         log.debug("Classpath: " + classpathElements);
+
+        //EL Interpreter Class
+        if (eLInterpreterClass != null) {
+            jspCompiler.setELInterpreterClass(eLInterpreterClass);
+        }
         
         final List<File> jspFiles;
         if (sources.getIncludes() != null) {

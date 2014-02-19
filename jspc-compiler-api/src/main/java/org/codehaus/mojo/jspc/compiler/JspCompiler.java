@@ -61,5 +61,7 @@ public interface JspCompiler {
 
     void setCompilerTargetVM(String target);
 
+    void setELInterpreterClass(String elInterpreterClass);
+
     void compile(Iterable<File> jspFiles) throws Exception;
 }

@@ -111,6 +111,10 @@ public class JspCompilerImpl implements JspCompiler {
         jspc.setCompilerTargetVM(target);
     }
 
+    public void setELInterpreterClass(String elInterpreterClass) {
+        //Unsupported in Tomcat 5
+    }
+
     public void compile(Iterable<File> jspFiles) throws Exception {
         final List<String> args = new ArrayList<String>();
         

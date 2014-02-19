@@ -33,12 +33,12 @@ import org.codehaus.mojo.jspc.compiler.JspCompiler;
  * @version $Id$
  */
 public class JspCompilerImpl implements JspCompiler {
-    private final JspC jspc;
+    private final JspCImpl jspc;
     private boolean showSuccess = false;
     private boolean listErrors = false;
-    
+
     public JspCompilerImpl() {
-        jspc = new JspC();
+        jspc = new JspCImpl();
         jspc.setFailOnError(true);
     }
 
@@ -111,21 +111,27 @@ public class JspCompilerImpl implements JspCompiler {
         jspc.setCompilerTargetVM(target);
     }
 
+    private static final String EL_INTERPRETER_CLASS = "org.apache.jasper.compiler.ELInterpreter";
+
+    public void setELInterpreterClass(String elInterpreterClass) {
+        jspc.setContextInitParameter(EL_INTERPRETER_CLASS, elInterpreterClass);
+    }
+
     public void compile(Iterable<File> jspFiles) throws Exception {
         final List<String> args = new ArrayList<String>();
-        
+
         if (showSuccess) {
             args.add("-s");
         }
-        
+
         if (listErrors) {
             args.add("-l");
         }
-        
+
         for (final File jspFile : jspFiles) {
             args.add(jspFile.getAbsolutePath());
         }
-        
+
         jspc.setArgs(args.toArray(new String[args.size()]));
 
         jspc.execute();
