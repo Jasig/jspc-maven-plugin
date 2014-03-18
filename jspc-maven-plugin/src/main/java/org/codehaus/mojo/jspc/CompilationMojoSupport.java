@@ -217,7 +217,7 @@ abstract class CompilationMojoSupport extends AbstractMojo {
      * The Maven project.
      */
     @Component
-    private MavenProject project;
+    protected MavenProject project;
     
     @Component( role = MavenFileFilter.class, hint = "default" )
     private MavenFileFilter mavenFileFilter;

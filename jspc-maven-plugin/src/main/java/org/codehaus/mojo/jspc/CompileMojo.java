@@ -80,10 +80,6 @@ public class CompileMojo extends CompilationMojoSupport {
                         }
                         tldExists = true;
                     }
-                    //Fix for https://jira.codehaus.org/browse/MJSPC-60
-                    else {
-                        list.add(target);
-                    }
                 }
             }
 
@@ -110,6 +106,8 @@ public class CompileMojo extends CompilationMojoSupport {
         finally {
             FileUtils.deleteQuietly(tempJarDir);
         }
+        //Fix for https://jira.codehaus.org/browse/MJSPC-60
+        list.add(project.getBuild().getOutputDirectory());
         return list;
     }
 
