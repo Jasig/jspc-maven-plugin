@@ -64,7 +64,7 @@ public class CompileMojo extends CompilationMojoSupport {
         try {
             tempJarDir.delete();
             tempJarDir.mkdir();
-            
+
             for (final String target : classpathElements) {
                 File file = new File(target);
                 if (file.isFile()) {
@@ -79,6 +79,10 @@ public class CompileMojo extends CompilationMojoSupport {
                             throw new MojoExecutionException("Failed copy '" + file + "' to '" + tempJarDir + "'", e);
                         }
                         tldExists = true;
+                    }
+                    //Fix for https://jira.codehaus.org/browse/MJSPC-60
+                    else {
+                        list.add(target);
                     }
                 }
             }
@@ -106,32 +110,38 @@ public class CompileMojo extends CompilationMojoSupport {
         finally {
             FileUtils.deleteQuietly(tempJarDir);
         }
-        //Fix for https://jira.codehaus.org/browse/MJSPC-60
-        list.add(project.getBuild().getOutputDirectory());
+        addBuildOutputDirectoryTo(list);
         return list;
+    }
+
+    private void addBuildOutputDirectoryTo(List<String> list) {
+        // If output directory contained .TLD files it wasn't added before. This is verified and done here if necessary.
+        if (classpathElements.contains(project.getBuild().getOutputDirectory()) && !list.contains(project.getBuild().getOutputDirectory())) {
+            list.add(project.getBuild().getOutputDirectory());
+        }
     }
 
     protected void createJarArchive(File archiveFile, File tempJarDir) throws IOException {
         JarOutputStream jos = null;
         try {
             jos = new JarOutputStream(new BufferedOutputStream(new FileOutputStream(archiveFile)), new Manifest());
-    
+
             int pathLength = tempJarDir.getAbsolutePath().length() + 1;
             Collection<File> files = FileUtils.listFiles(tempJarDir, null, true);
             for (final File file : files) {
                 if (!file.isFile()){
                     continue;
                 }
-    
+
                 if(getLog().isDebugEnabled()) {
                     getLog().debug("file: " + file.getAbsolutePath());
                 }
-                
+
                 // Add entry
                 String name = file.getAbsolutePath().substring(pathLength);
                 JarEntry jarFile = new JarEntry(name);
                 jos.putNextEntry(jarFile);
-    
+
                 FileUtils.copyFile(file, jos);
             }
         } finally {
