@@ -111,12 +111,19 @@ public class CompileMojo extends CompilationMojoSupport {
             FileUtils.deleteQuietly(tempJarDir);
         }
         addBuildOutputDirectoryTo(list);
+        addWebAppOutputDirectoryTo(list); // FIXME Workaround: Exploded .war folder until Tomcat 7 can be used
         return list;
     }
 
     private void addBuildOutputDirectoryTo(List<String> list) {
         // If output directory contained .TLD files it wasn't added before. This is verified and done here if necessary.
         if (classpathElements.contains(project.getBuild().getOutputDirectory()) && !list.contains(project.getBuild().getOutputDirectory())) {
+            list.add(project.getBuild().getOutputDirectory());
+        }
+    }
+
+    private void addWebAppOutputDirectoryTo(List<String> list) {
+        if (!list.contains(project.getBuild().getOutputDirectory())) {
             list.add(project.getBuild().getOutputDirectory());
         }
     }
