@@ -63,5 +63,7 @@ public interface JspCompiler {
 
     void setELInterpreterClass(String elInterpreterClass);
 
+    void setGenStringAsCharArray(boolean genStringAsCharArray);
+
     void compile(Iterable<File> jspFiles) throws Exception;
 }

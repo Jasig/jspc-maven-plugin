@@ -204,6 +204,9 @@ abstract class CompilationMojoSupport extends AbstractMojo {
     @Parameter(property="eLInterpreterClass")
     String eLInterpreterClass;
 
+    @Parameter(property = "genStringAsCharArray")
+    boolean genStringAsCharArray;
+
     /**
      * Issue an error when the value of the class attribute in a useBean action is
      * not a valid bean class
@@ -283,6 +286,7 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         
         jspCompiler.setPackageName(packageName);
         log.debug("Package Name: " + this.packageName);
+
         
         final List<String> classpathElements = getClasspathElements();
         jspCompiler.setClasspath(classpathElements);
@@ -292,6 +296,8 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         if (eLInterpreterClass != null) {
             jspCompiler.setELInterpreterClass(eLInterpreterClass);
         }
+
+        jspCompiler.setGenStringAsCharArray(genStringAsCharArray);
         
         final List<File> jspFiles;
         if (sources.getIncludes() != null) {

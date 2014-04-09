@@ -117,6 +117,10 @@ public class JspCompilerImpl implements JspCompiler {
         jspc.setContextInitParameter(EL_INTERPRETER_CLASS, elInterpreterClass);
     }
 
+    public void setGenStringAsCharArray(boolean genStringAsCharArray) {
+        jspc.setGenStringAsCharArray(genStringAsCharArray);
+    }
+
     public void compile(Iterable<File> jspFiles) throws Exception {
         final List<String> args = new ArrayList<String>();
 

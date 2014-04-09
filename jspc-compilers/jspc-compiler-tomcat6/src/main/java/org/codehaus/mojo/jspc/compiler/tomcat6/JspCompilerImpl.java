@@ -115,6 +115,10 @@ public class JspCompilerImpl implements JspCompiler {
         //Unsupported in Tomcat 6
     }
 
+    public void setGenStringAsCharArray(boolean genStringAsCharArray) {
+        jspc.setGenStringAsCharArray(genStringAsCharArray);
+    }
+
     public void compile(Iterable<File> jspFiles) throws Exception {
         final List<String> args = new ArrayList<String>();
         
