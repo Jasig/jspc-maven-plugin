@@ -250,8 +250,9 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         final boolean isWar = "war".equals(project.getPackaging());
 
         if (!isWar) {
-            log.warn("Compiled JSPs will not be added to the project and web.xml will " +
-                     "not be modified because the project's packaging is not 'war'.");
+            return;
+//            log.warn("Compiled JSPs will not be added to the project and web.xml will " +
+//                     "not be modified because the project's packaging is not 'war'.");
         }
         if (!includeInProject) {
             log.warn("Compiled JSPs will not be added to the project and web.xml will " +
