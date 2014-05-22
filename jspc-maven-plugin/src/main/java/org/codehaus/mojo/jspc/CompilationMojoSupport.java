@@ -207,6 +207,10 @@ abstract class CompilationMojoSupport extends AbstractMojo {
     @Parameter(property = "genStringAsCharArray")
     boolean genStringAsCharArray;
 
+
+    @Parameter(property = "enablePooling", defaultValue="true")
+    boolean enablePooling;
+
     /**
      * Issue an error when the value of the class attribute in a useBean action is
      * not a valid bean class
@@ -298,6 +302,8 @@ abstract class CompilationMojoSupport extends AbstractMojo {
             jspCompiler.setELInterpreterClass(eLInterpreterClass);
         }
 
+        jspCompiler.setEnablePooling(enablePooling);
+
         jspCompiler.setGenStringAsCharArray(genStringAsCharArray);
         
         final List<File> jspFiles;
@@ -329,6 +335,7 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         jspCompiler.setErrorOnUseBeanInvalidClassAttribute(errorOnUseBeanInvalidClassAttribute);
         jspCompiler.setCompilerSourceVM(source);
         jspCompiler.setCompilerTargetVM(target);
+
         
         // Make directories if needed
         workingDirectory.mkdirs();

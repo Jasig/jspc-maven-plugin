@@ -25,7 +25,7 @@
     <parent>
         <groupId>org.jasig.mojo.jspc</groupId>
         <artifactId>jspc-compilers</artifactId>
-        <version>2.0.0.3-EBAY</version>
+        <version>2.0.0.4-EBAY</version>
     </parent>
     
     <artifactId>jspc-compiler-tomcat5</artifactId>

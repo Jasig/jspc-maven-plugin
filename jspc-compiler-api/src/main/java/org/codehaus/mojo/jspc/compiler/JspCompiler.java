@@ -65,5 +65,7 @@ public interface JspCompiler {
 
     void setGenStringAsCharArray(boolean genStringAsCharArray);
 
+    void setEnablePooling(boolean enablePooling);
+
     void compile(Iterable<File> jspFiles) throws Exception;
 }

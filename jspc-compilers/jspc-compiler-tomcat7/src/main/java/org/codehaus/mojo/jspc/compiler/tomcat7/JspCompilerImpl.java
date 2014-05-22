@@ -121,6 +121,10 @@ public class JspCompilerImpl implements JspCompiler {
         jspc.setGenStringAsCharArray(genStringAsCharArray);
     }
 
+    public void setEnablePooling(boolean enablePooling) {
+        jspc.setPoolingEnabled(enablePooling);
+    }
+
     public void compile(Iterable<File> jspFiles) throws Exception {
         final List<String> args = new ArrayList<String>();
 
