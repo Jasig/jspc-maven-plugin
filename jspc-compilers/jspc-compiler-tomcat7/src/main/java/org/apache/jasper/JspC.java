@@ -378,59 +378,13 @@ public class JspC extends Task implements Options {
 		}
 
 		// Add all extra arguments to the list of files
-		//  while( true ) {
-		//     String file = nextFile();
-		//    if( file==null ) {
-		//break;
-		//   }
-		//  pages.add( file );
-		//}
-
-		File uriRootF = new File(uriRoot);
-		if (!uriRootF.isDirectory()) {
-			throw new JasperException(
-					Localizer.getMessage("jsp.error.jspc.uriroot_not_dir"));
+		while( true ) {
+			String file = nextFile();
+			if( file==null ) {
+				break;
+			}
+			pages.add( file );
 		}
-
-
-		long time=System.currentTimeMillis();
-		int errors = 0;
-		Iterator<String> iter = pages.iterator();
-		while (iter.hasNext()) {
-			String nextjsp = iter.next().toString();
-			File fjsp = new File(nextjsp);
-			if (!fjsp.isAbsolute()) {
-				fjsp = new File(uriRootF, nextjsp);
-			}
-			if (!fjsp.exists()) {
-				if (log.isWarnEnabled()) {
-					log.warn
-						(Localizer.getMessage
-						 ("jspc.error.fileDoesNotExist", fjsp.toString()));
-				}
-				continue;
-			}
-			String s = fjsp.getAbsolutePath();
-			if (s.startsWith(uriRoot)) {
-				nextjsp = s.substring(uriRoot.length());
-			}
-			if (nextjsp.startsWith("." + File.separatorChar)) {
-				nextjsp = nextjsp.substring(2);
-			}
-			try {
-				processFile(nextjsp);
-			}
-			catch(JasperException ex) {
-				errors++;
-				log.error(nextjsp + ":" + ex.getMessage());
-			}
-		}
-		String timeFromatted = new DecimalFormat("#.###").format((double)(System.currentTimeMillis()-time)/1000);
-		System.out.println("JSP-compilations: "+pages.size()+", Errors: "+errors+", Time elapsed: "+timeFromatted+" sec");
-		if (errors > 0) {
-			throw new JasperException("Aborted due to compilation failures!");
-		}
-
 	}
 
 	/**
@@ -1352,6 +1306,8 @@ public class JspC extends Task implements Options {
 				initWebXml();
 
 				Iterator<String> iter = pages.iterator();
+				long time=System.currentTimeMillis();
+				int errors = 0;
 				while (iter.hasNext()) {
 					String nextjsp = iter.next().toString();
 					File fjsp = new File(nextjsp);
@@ -1373,9 +1329,44 @@ public class JspC extends Task implements Options {
 					if (nextjsp.startsWith("." + File.separatorChar)) {
 						nextjsp = nextjsp.substring(2);
 					}
-					processFile(nextjsp);
+					try {
+						processFile(nextjsp);
+					}
+					catch(JasperException ex) {
+						errors++;
+						log.error(nextjsp + ":" + ex.getMessage());
+					}
+				}
+				String timeFromatted = new DecimalFormat("#.###").format((double)(System.currentTimeMillis()-time)/1000);
+				System.out.println("JSP-compilations: "+pages.size()+", Errors: "+errors+", Time elapsed: "+timeFromatted+" sec");
+				if (errors > 0) {
+					throw new JasperException("Aborted due to compilation failures!");
 				}
 
+				/*				while (iter.hasNext()) {
+									String nextjsp = iter.next().toString();
+									File fjsp = new File(nextjsp);
+									if (!fjsp.isAbsolute()) {
+									fjsp = new File(uriRootF, nextjsp);
+									}
+									if (!fjsp.exists()) {
+									if (log.isWarnEnabled()) {
+									log.warn
+									(Localizer.getMessage
+									("jspc.error.fileDoesNotExist", fjsp.toString()));
+									}
+									continue;
+									}
+									String s = fjsp.getAbsolutePath();
+									if (s.startsWith(uriRoot)) {
+									nextjsp = s.substring(uriRoot.length());
+									}
+									if (nextjsp.startsWith("." + File.separatorChar)) {
+									nextjsp = nextjsp.substring(2);
+									}
+									processFile(nextjsp);
+				}
+				 */
 				completeWebXml();
 
 				if (addWebXmlMappings) {
