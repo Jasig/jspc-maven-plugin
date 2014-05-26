@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.jasper.JspC;
+import org.apache.jasper.JspC2;
 import org.codehaus.mojo.jspc.compiler.JspCompiler;
 
 /**
@@ -33,12 +33,12 @@ import org.codehaus.mojo.jspc.compiler.JspCompiler;
  * @version $Id$
  */
 public class JspCompilerImpl implements JspCompiler {
-    private final JspC jspc;
+    private final JspC2 jspc;
     private boolean showSuccess = false;
     private boolean listErrors = false;
     
     public JspCompilerImpl() {
-        jspc = new JspC();
+        jspc = new JspC2();
         jspc.setFailOnError(true);
     }
 
