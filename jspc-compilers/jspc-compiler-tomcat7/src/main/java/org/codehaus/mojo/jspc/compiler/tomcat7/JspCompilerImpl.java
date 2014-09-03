@@ -150,7 +150,7 @@ public class JspCompilerImpl implements JspCompiler {
 					ArrayList<String> argList = new ArrayList<String>(args);
 					argList.add(jspFile.getAbsolutePath());
 					JspC jspc = new JspC(); 
-					jspc.setFailOnError(true);
+					jspc.setFailOnError(failOnError);
 			        jspc.setUriroot(webappDir);
 			        jspc.setOutputDir(outputDirectory.getAbsolutePath());
 			        jspc.setJavaEncoding(encoding);
