@@ -22,36 +22,53 @@ package org.codehaus.mojo.jspc.compiler.tomcat7;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jasper.JspC;
 import org.codehaus.mojo.jspc.compiler.JspCompiler;
 
 /**
- * JSP compiler for Tomcat 6.
+ * JSP compiler for Tomcat 7.
  *
  * @version $Id$
  */
 public class JspCompilerImpl implements JspCompiler {
-    private final JspC jspc;
     private boolean showSuccess = false;
     private boolean listErrors = false;
+	private boolean failOnError;
+	private String classpath;
+	private File outputDirectory;
+	private String encoding;
+	private File webFragmentFile;
+	private String packageName;
+	private boolean smapDumped;
+	private boolean smapSuppressed;
+	private boolean compile;
+	private boolean validateXml;
+	private boolean trimSpaces;
+	private boolean errorOnUseBeanInvalidClassAttribute;
+	private int verbose;
+	private String compilerSourceVM;
+	private String compilerTargetVM;
+	private String webappDir;
     
     public JspCompilerImpl() {
-        jspc = new JspC();
-        jspc.setFailOnError(true);
+    	this.failOnError = true;
     }
 
     public void setWebappDirectory(String webappDir) {
-        jspc.setUriroot(webappDir);
+    	this.webappDir = webappDir;
     }
 
     public void setOutputDirectory(File outputDirectory) {
-        jspc.setOutputDir(outputDirectory.getAbsolutePath());
+    	this.outputDirectory = outputDirectory;
     }
 
     public void setEncoding(String encoding) {
-        jspc.setJavaEncoding(encoding);
+    	this.encoding = encoding;
     }
 
     public void setShowSuccess(boolean showSuccess) {
@@ -63,52 +80,51 @@ public class JspCompilerImpl implements JspCompiler {
     }
 
     public void setWebFragmentFile(File webFragmentFile) {
-        jspc.setWebXmlFragment(webFragmentFile.getAbsolutePath());
+    	this.webFragmentFile = webFragmentFile;
     }
 
     public void setPackageName(String packageName) {
-        jspc.setPackage(packageName);
+        this.packageName = packageName;
     }
 
     public void setClasspath(Iterable<String> classpathElements) {
-        final String classpath = StringUtils.join(classpathElements.iterator(), File.pathSeparator);
-        jspc.setClassPath(classpath);
+        classpath = StringUtils.join(classpathElements.iterator(), File.pathSeparator);
     }
 
     public void setSmapDumped(final boolean smapDumped) {
-        jspc.setSmapDumped(smapDumped);
+    	this.smapDumped = smapDumped;
     }
 
     public void setSmapSuppressed(final boolean smapSuppressed) {
-        jspc.setSmapSuppressed(smapSuppressed);
+    	this.smapSuppressed = smapSuppressed;
     }
 
     public void setCompile(final boolean compile) {
-        jspc.setCompile(compile);
+    	this.compile = compile;
     }
 
     public void setValidateXml(final boolean validateXml) {
-        jspc.setValidateXml(validateXml);
+    	this.validateXml = validateXml;
     }
 
     public void setTrimSpaces(final boolean trimSpaces) {
-        jspc.setTrimSpaces(trimSpaces);
+    	this.trimSpaces = trimSpaces;
     }
 
     public void setErrorOnUseBeanInvalidClassAttribute(boolean error) {
-        jspc.setErrorOnUseBeanInvalidClassAttribute(error);
+    	this.errorOnUseBeanInvalidClassAttribute = error;
     }
 
     public void setVerbose(final int verbose) {
-        jspc.setVerbose(verbose);
+    	this.verbose = verbose;
     }
 
     public void setCompilerSourceVM(final String source) {
-        jspc.setCompilerSourceVM(source);
+    	this.compilerSourceVM = source;
     }
 
     public void setCompilerTargetVM(final String target) {
-        jspc.setCompilerTargetVM(target);
+    	this.compilerTargetVM = target;
     }
 
     public void compile(Iterable<File> jspFiles) throws Exception {
@@ -122,12 +138,43 @@ public class JspCompilerImpl implements JspCompiler {
             args.add("-l");
         }
         
-        for (final File jspFile : jspFiles) {
-            args.add(jspFile.getAbsolutePath());
-        }
+        System.out.println("Creating executor");
+        System.out.println("---------------------------------");
+        ExecutorService executor = Executors.newFixedThreadPool(20);
         
-        jspc.setArgs(args.toArray(new String[args.size()]));
+        List<Callable<String>> jobs = new ArrayList<Callable<String>>();
+        
+		for (final File jspFile : jspFiles) {
+			jobs.add(new Callable<String>() {
+				public String call() throws Exception {
+					ArrayList<String> argList = new ArrayList<String>(args);
+					argList.add(jspFile.getAbsolutePath());
+					JspC jspc = new JspC(); 
+					jspc.setFailOnError(true);
+			        jspc.setUriroot(webappDir);
+			        jspc.setOutputDir(outputDirectory.getAbsolutePath());
+			        jspc.setJavaEncoding(encoding);
+			        jspc.setWebXmlFragment(webFragmentFile.getAbsolutePath());
+			        jspc.setPackage(packageName);
+			        jspc.setClassPath(classpath);
 
-        jspc.execute();
+			        jspc.setSmapDumped(smapDumped);
+			        jspc.setSmapSuppressed(smapSuppressed);
+			        jspc.setCompile(compile);
+			        jspc.setValidateXml(validateXml);
+			        jspc.setTrimSpaces(trimSpaces);
+			        jspc.setErrorOnUseBeanInvalidClassAttribute(errorOnUseBeanInvalidClassAttribute);
+			        jspc.setVerbose(verbose);
+			        jspc.setCompilerSourceVM(compilerSourceVM);
+			        jspc.setCompilerTargetVM(compilerTargetVM);
+					
+					jspc.setArgs(args.toArray(new String[args.size()]));
+
+					jspc.execute();
+					return "compiled: " + jspFile.getAbsolutePath();
+				}
+			});
+		}
+		executor.invokeAll(jobs);
     }
 }
