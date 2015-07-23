@@ -208,6 +208,12 @@ abstract class CompilationMojoSupport extends AbstractMojo {
     @Parameter(defaultValue="true")
     boolean errorOnUseBeanInvalidClassAttribute;
 
+    /**
+     * Stops when there is an error in compilation.
+     */
+    @Parameter(defaultValue="true")
+    boolean failOnError;
+    
     //
     // Components
     //
@@ -314,6 +320,7 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         jspCompiler.setErrorOnUseBeanInvalidClassAttribute(errorOnUseBeanInvalidClassAttribute);
         jspCompiler.setCompilerSourceVM(source);
         jspCompiler.setCompilerTargetVM(target);
+        jspCompiler.setFailOnError(failOnError);
         
         // Make directories if needed
         workingDirectory.mkdirs();
