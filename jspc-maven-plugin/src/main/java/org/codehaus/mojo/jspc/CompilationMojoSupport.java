@@ -259,6 +259,7 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         if (sources == null) {
             sources = new FileSet();
             sources.setDirectory(this.defaultSourcesDirectory.getAbsolutePath());
+            sources.setIncludes(Arrays.asList("**/*.jsp"));
             sources.setExcludes(Arrays.asList("WEB-INF/web.xml", "META-INF/**"));
         }
 
@@ -330,17 +331,16 @@ abstract class CompilationMojoSupport extends AbstractMojo {
             // Show a nice message when we know how many files are included
             if (!jspFiles.isEmpty()) {
                 log.info("Compiling " + jspFiles.size() + " JSP source file" + (jspFiles.size() > 1 ? "s" : "") + " to " + workingDirectory);
+                final StopWatch watch = new StopWatch();
+                watch.start();
+                
+                jspCompiler.compile(jspFiles);
+                
+                log.info("Compilation completed in " + watch);
             }
             else {
-                log.info("Compiling JSP source files to " + workingDirectory);
+                log.info("No JSP source files found.");
             }
-            
-            final StopWatch watch = new StopWatch();
-            watch.start();
-            
-            jspCompiler.compile(jspFiles);
-            
-            log.info("Compilation completed in " + watch);
         }
         catch (Exception e) {
             throw new MojoFailureException("Failed to compile JSPS", e);
@@ -356,7 +356,7 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         }
         
         // Maybe install the generated classes into the default output directory
-        if (compile && isWar) {
+        if (includeInProject && compile && isWar) {
             final Scanner scanner = buildContext.newScanner(this.workingDirectory);
             scanner.addDefaultExcludes();
             scanner.setIncludes(new String[] { "**/*.class" });
