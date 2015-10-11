@@ -201,6 +201,16 @@ abstract class CompilationMojoSupport extends AbstractMojo {
     @Parameter(property="jspc.skip", defaultValue="false")
     boolean skip;
 
+    @Parameter(property="eLInterpreterClass")
+    String eLInterpreterClass;
+
+    @Parameter(property = "genStringAsCharArray")
+    boolean genStringAsCharArray;
+
+
+    @Parameter(property = "enablePooling", defaultValue="true")
+    boolean enablePooling;
+
     /**
      * Issue an error when the value of the class attribute in a useBean action is
      * not a valid bean class
@@ -244,8 +254,9 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         final boolean isWar = "war".equals(project.getPackaging());
 
         if (!isWar) {
-            log.warn("Compiled JSPs will not be added to the project and web.xml will " +
-                     "not be modified because the project's packaging is not 'war'.");
+            return;
+//            log.warn("Compiled JSPs will not be added to the project and web.xml will " +
+//                     "not be modified because the project's packaging is not 'war'.");
         }
         if (!includeInProject) {
             log.warn("Compiled JSPs will not be added to the project and web.xml will " +
@@ -280,10 +291,20 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         
         jspCompiler.setPackageName(packageName);
         log.debug("Package Name: " + this.packageName);
+
         
         final List<String> classpathElements = getClasspathElements();
         jspCompiler.setClasspath(classpathElements);
         log.debug("Classpath: " + classpathElements);
+
+        //EL Interpreter Class
+        if (eLInterpreterClass != null) {
+            jspCompiler.setELInterpreterClass(eLInterpreterClass);
+        }
+
+        jspCompiler.setEnablePooling(enablePooling);
+
+        jspCompiler.setGenStringAsCharArray(genStringAsCharArray);
         
         final List<File> jspFiles;
         if (sources.getIncludes() != null) {
@@ -314,6 +335,7 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         jspCompiler.setErrorOnUseBeanInvalidClassAttribute(errorOnUseBeanInvalidClassAttribute);
         jspCompiler.setCompilerSourceVM(source);
         jspCompiler.setCompilerTargetVM(target);
+
         
         // Make directories if needed
         workingDirectory.mkdirs();

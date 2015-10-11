@@ -61,5 +61,11 @@ public interface JspCompiler {
 
     void setCompilerTargetVM(String target);
 
+    void setELInterpreterClass(String elInterpreterClass);
+
+    void setGenStringAsCharArray(boolean genStringAsCharArray);
+
+    void setEnablePooling(boolean enablePooling);
+
     void compile(Iterable<File> jspFiles) throws Exception;
 }

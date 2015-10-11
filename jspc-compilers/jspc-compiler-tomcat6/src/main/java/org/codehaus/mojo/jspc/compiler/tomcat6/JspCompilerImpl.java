@@ -111,6 +111,18 @@ public class JspCompilerImpl implements JspCompiler {
         jspc.setCompilerTargetVM(target);
     }
 
+    public void setELInterpreterClass(String elInterpreterClass) {
+        //Unsupported in Tomcat 6
+    }
+
+    public void setGenStringAsCharArray(boolean genStringAsCharArray) {
+        jspc.setGenStringAsCharArray(genStringAsCharArray);
+    }
+
+    public void setEnablePooling(boolean enablePooling) {
+        jspc.setPoolingEnabled(enablePooling);
+    }
+
     public void compile(Iterable<File> jspFiles) throws Exception {
         final List<String> args = new ArrayList<String>();
         
