@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.codehaus.mojo.jspc.compiler.tomcat6;
+package org.codehaus.mojo.jspc.compiler.tomcat8;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ import org.apache.jasper.JspC;
 import org.codehaus.mojo.jspc.compiler.JspCompiler;
 
 /**
- * JSP compiler for Tomcat 6.
+ * JSP compiler for Tomcat 8.
  *
  * @version $Id$
  */

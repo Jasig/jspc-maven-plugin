@@ -110,6 +110,11 @@ public class JspCompilerImpl implements JspCompiler {
     public void setCompilerTargetVM(final String target) {
         jspc.setCompilerTargetVM(target);
     }
+    
+    public void setFailOnError(final boolean failOnError)
+    {
+        jspc.setFailOnError(failOnError);
+    }
 
     public void compile(Iterable<File> jspFiles) throws Exception {
         final List<String> args = new ArrayList<String>();

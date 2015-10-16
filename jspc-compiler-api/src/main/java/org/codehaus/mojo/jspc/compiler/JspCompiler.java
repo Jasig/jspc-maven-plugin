@@ -62,4 +62,6 @@ public interface JspCompiler {
     void setCompilerTargetVM(String target);
 
     void compile(Iterable<File> jspFiles) throws Exception;
+    
+    void setFailOnError(boolean failOnError);
 }
