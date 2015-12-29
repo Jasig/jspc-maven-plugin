@@ -18,6 +18,14 @@
  */
 package org.codehaus.mojo.jspc;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,14 +36,6 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
 
 /**
  * Compile JSPs.
@@ -64,7 +64,7 @@ public class CompileMojo extends CompilationMojoSupport {
         try {
             tempJarDir.delete();
             tempJarDir.mkdir();
-            
+
             for (final String target : classpathElements) {
                 File file = new File(target);
                 if (file.isFile()) {
@@ -117,23 +117,25 @@ public class CompileMojo extends CompilationMojoSupport {
         JarOutputStream jos = null;
         try {
             jos = new JarOutputStream(new BufferedOutputStream(new FileOutputStream(archiveFile)), new Manifest());
-    
+
             int pathLength = tempJarDir.getAbsolutePath().length() + 1;
             Collection<File> files = FileUtils.listFiles(tempJarDir, null, true);
             for (final File file : files) {
                 if (!file.isFile()){
                     continue;
                 }
-    
+
                 if(getLog().isDebugEnabled()) {
                     getLog().debug("file: " + file.getAbsolutePath());
                 }
-                
+
                 // Add entry
                 String name = file.getAbsolutePath().substring(pathLength);
+                // normalize path as the JspCompiler expects '/' as separator
+                name = name.replace('\\', '/');
                 JarEntry jarFile = new JarEntry(name);
                 jos.putNextEntry(jarFile);
-    
+
                 FileUtils.copyFile(file, jos);
             }
         } finally {
