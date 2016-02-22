@@ -33,6 +33,7 @@ under the License.
   Eclipse JDT Core under Eclipse Public License v1.0
   EL under The Apache Software License, Version 2.0
   el-api under Apache License, Version 2.0
+  Embedded GlassFish All-In-One under CDDL + GPLv2 with classpath exception
   FindBugs-jsr305 under The Apache Software License, Version 2.0
   Hamcrest Core under New BSD License
   jasper under Apache License, Version 2.0
@@ -42,9 +43,11 @@ under the License.
   jasper-runtime under The Apache Software License, Version 2.0
   jsp-api under Apache License, Version 2.0
   JSPC Compiler API under Apache License Version 2.0
+  JSPC Compiler for Glassfish 3 under Apache License Version 2.0
   JSPC Compiler for Tomcat 5 under Apache License Version 2.0
   JSPC Compiler for Tomcat 6 under Apache License Version 2.0
   JSPC Compiler for Tomcat 7 under Apache License Version 2.0
+  JSPC Compiler for Tomcat 8 under Apache License Version 2.0
   JSPC Compilers under Apache License Version 2.0
   JSPC Maven Plugin under Apache License Version 2.0
   JSPC Maven Support under Apache License Version 2.0
@@ -87,12 +90,12 @@ under the License.
   tomcat-el-api under Apache License, Version 2.0
   tomcat-jasper under Apache License, Version 2.0
   tomcat-jasper-el under Apache License, Version 2.0
-  tomcat-jsp-api under Apache License, Version 2.0 and
-        Common Development And Distribution License (CDDL) Version 1.0
+  tomcat-jsp-api under Apache License, Version 2.0
   tomcat-juli under Apache License, Version 2.0
   tomcat-servlet-api under Apache License, Version 2.0 and
         Common Development And Distribution License (CDDL) Version 1.0
   tomcat-util under Apache License, Version 2.0
+  tomcat-util-scan under Apache License, Version 2.0
 
  
 This project also includes code under copywrite of the following:
