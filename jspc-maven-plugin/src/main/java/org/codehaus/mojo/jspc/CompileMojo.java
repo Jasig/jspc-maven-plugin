@@ -18,6 +18,14 @@
  */
 package org.codehaus.mojo.jspc;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,14 +36,6 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
 
 /**
  * Compile JSPs.
@@ -146,6 +146,8 @@ public class CompileMojo extends CompilationMojoSupport {
 
                 // Add entry
                 String name = file.getAbsolutePath().substring(pathLength);
+                // normalize path as the JspCompiler expects '/' as separator
+                name = name.replace('\\', '/');
                 JarEntry jarFile = new JarEntry(name);
                 jos.putNextEntry(jarFile);
 
