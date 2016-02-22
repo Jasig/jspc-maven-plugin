@@ -25,7 +25,7 @@
     <parent>
         <groupId>org.jasig.mojo.jspc</groupId>
         <artifactId>jspc-compilers</artifactId>
-        <version>2.0.1</version>
+        <version>2.0.2-SNAPSHOT</version>
     </parent>
     
     <artifactId>jspc-compiler-tomcat7-multithreaded</artifactId>
