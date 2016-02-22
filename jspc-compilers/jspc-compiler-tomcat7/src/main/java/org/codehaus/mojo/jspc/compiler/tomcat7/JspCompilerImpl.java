@@ -110,6 +110,22 @@ public class JspCompilerImpl implements JspCompiler {
         jspc.setCompilerTargetVM(target);
     }
 
+    public void setCaching(boolean caching) {
+        jspc.setCaching(caching);
+    }
+
+    public void setGenStringAsCharArray(boolean genStringAsCharArray) {
+        jspc.setGenStringAsCharArray(genStringAsCharArray);
+    }
+
+    public void setPoolingEnabled(boolean poolingEnabled) {
+        jspc.setPoolingEnabled(poolingEnabled);
+    }
+
+    public void setClassDebugInfo(boolean classDebugInfo) {
+        jspc.setClassDebugInfo(classDebugInfo);
+    }
+
     public void compile(Iterable<File> jspFiles) throws Exception {
         final List<String> args = new ArrayList<String>();
         

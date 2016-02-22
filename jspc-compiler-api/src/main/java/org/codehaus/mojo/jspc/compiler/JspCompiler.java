@@ -60,6 +60,14 @@ public interface JspCompiler {
     void setCompilerSourceVM(String source);
 
     void setCompilerTargetVM(String target);
+
+    void setCaching(boolean caching);
+
+    void setGenStringAsCharArray(boolean genStringAsCharArray);
+
+    void setPoolingEnabled(boolean poolingEnabled);
+
+    void setClassDebugInfo(boolean classDebugInfo);
     
     void setCompileThreads(int threads);
     
