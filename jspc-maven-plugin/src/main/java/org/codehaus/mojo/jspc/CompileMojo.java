@@ -64,7 +64,7 @@ public class CompileMojo extends CompilationMojoSupport {
         try {
             tempJarDir.delete();
             tempJarDir.mkdir();
-            
+
             for (final String target : classpathElements) {
                 File file = new File(target);
                 if (file.isFile()) {
@@ -110,30 +110,45 @@ public class CompileMojo extends CompilationMojoSupport {
         finally {
             FileUtils.deleteQuietly(tempJarDir);
         }
+        addBuildOutputDirectoryTo(list);
+        addWebAppOutputDirectoryTo(list); // FIXME Workaround: Exploded .war folder until Tomcat 7 can be used
         return list;
+    }
+
+    private void addBuildOutputDirectoryTo(List<String> list) {
+        // If output directory contained .TLD files it wasn't added before. This is verified and done here if necessary.
+        if (classpathElements.contains(project.getBuild().getOutputDirectory()) && !list.contains(project.getBuild().getOutputDirectory())) {
+            list.add(project.getBuild().getOutputDirectory());
+        }
+    }
+
+    private void addWebAppOutputDirectoryTo(List<String> list) {
+        if (!list.contains(project.getBuild().getOutputDirectory())) {
+            list.add(project.getBuild().getOutputDirectory());
+        }
     }
 
     protected void createJarArchive(File archiveFile, File tempJarDir) throws IOException {
         JarOutputStream jos = null;
         try {
             jos = new JarOutputStream(new BufferedOutputStream(new FileOutputStream(archiveFile)), new Manifest());
-    
+
             int pathLength = tempJarDir.getAbsolutePath().length() + 1;
             Collection<File> files = FileUtils.listFiles(tempJarDir, null, true);
             for (final File file : files) {
                 if (!file.isFile()){
                     continue;
                 }
-    
+
                 if(getLog().isDebugEnabled()) {
                     getLog().debug("file: " + file.getAbsolutePath());
                 }
-                
+
                 // Add entry
                 String name = file.getAbsolutePath().substring(pathLength);
                 JarEntry jarFile = new JarEntry(name);
                 jos.putNextEntry(jarFile);
-    
+
                 FileUtils.copyFile(file, jos);
             }
         } finally {
