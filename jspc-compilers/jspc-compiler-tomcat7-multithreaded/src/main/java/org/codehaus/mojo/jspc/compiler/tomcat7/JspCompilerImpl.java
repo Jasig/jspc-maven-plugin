@@ -27,7 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.codehaus.mojo.jspc.compiler.JspCompiler;
 
 /**
- * JSP compiler for Tomcat 7. Supports multi-threaded compilation.
+ * JSP compiler for Tomcat 6.
  *
  * @version $Id$
  */
@@ -125,16 +125,9 @@ public class JspCompilerImpl implements JspCompiler {
             args.add(jspFile.getAbsolutePath());
         }
         
+        jspc.setThreads(Integer.getInteger("jspc.threads", 1));
         jspc.setArgs(args.toArray(new String[args.size()]));
 
         jspc.execute();
-    }
-
-    public void setCompileThreads(int threads) {
-        jspc.setThreads(threads);
-    }
-
-    public void setCompileTimeout(long timeout) {
-        jspc.setCompilationTimeout(timeout);
     }
 }

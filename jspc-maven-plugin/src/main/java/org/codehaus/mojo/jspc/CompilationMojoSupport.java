@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.XmlStreamReader;
@@ -208,6 +209,17 @@ abstract class CompilationMojoSupport extends AbstractMojo {
     @Parameter(defaultValue="true")
     boolean errorOnUseBeanInvalidClassAttribute;
 
+    /**
+     * Number of threads to compile with
+     */
+    @Parameter(defaultValue="1")
+    int compileThreads;
+    
+    /**
+     * maximum amount of time compilation can take or be killed in minutes 
+     */
+    @Parameter(defaultValue="5")
+    int compilationTimeout;
     //
     // Components
     //
@@ -314,6 +326,8 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         jspCompiler.setErrorOnUseBeanInvalidClassAttribute(errorOnUseBeanInvalidClassAttribute);
         jspCompiler.setCompilerSourceVM(source);
         jspCompiler.setCompilerTargetVM(target);
+        jspCompiler.setCompileThreads(compileThreads);
+        jspCompiler.setCompileTimeout(TimeUnit.MINUTES.toMillis(compilationTimeout));
         
         // Make directories if needed
         workingDirectory.mkdirs();

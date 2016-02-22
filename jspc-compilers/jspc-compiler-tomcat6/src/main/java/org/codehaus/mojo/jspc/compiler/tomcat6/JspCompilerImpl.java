@@ -28,17 +28,17 @@ import org.apache.jasper.JspC;
 import org.codehaus.mojo.jspc.compiler.JspCompiler;
 
 /**
- * JSP compiler for Tomcat 6.
+ * JSP compiler for Tomcat 6. Supports multi-threaded compilation.
  *
  * @version $Id$
  */
 public class JspCompilerImpl implements JspCompiler {
-    private final JspC jspc;
+    private final MultiThreadedJspC jspc;
     private boolean showSuccess = false;
     private boolean listErrors = false;
     
     public JspCompilerImpl() {
-        jspc = new JspC();
+        jspc = new MultiThreadedJspC();
         jspc.setFailOnError(true);
     }
 
@@ -129,5 +129,13 @@ public class JspCompilerImpl implements JspCompiler {
         jspc.setArgs(args.toArray(new String[args.size()]));
 
         jspc.execute();
+    }
+
+    public void setCompileThreads(int threads) {
+        jspc.setThreads(threads);
+    }
+
+    public void setCompileTimeout(long timeout) {
+        jspc.setCompilationTimeout(timeout);
     }
 }

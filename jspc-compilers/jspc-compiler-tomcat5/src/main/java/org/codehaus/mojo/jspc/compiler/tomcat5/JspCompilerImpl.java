@@ -28,7 +28,7 @@ import org.apache.jasper.JspC;
 import org.codehaus.mojo.jspc.compiler.JspCompiler;
 
 /**
- * JSP compiler for Tomcat 5.
+ * JSP compiler for Tomcat 5. Does NOT support multi-threaded compilation.
  *
  * @version $Id$
  */
@@ -129,5 +129,18 @@ public class JspCompilerImpl implements JspCompiler {
         jspc.setArgs(args.toArray(new String[args.size()]));
 
         jspc.execute();
+    }
+
+    // ignored, multithreading not supported on tomcat5
+    public void setCompileThreads(int threads) {
+        if (threads > 1) {
+            for (int i = 0; i < 3; i++) {
+                System.out.println("WARN: Multi-threaded compilation not supported with tomcat5 compiler");
+            }
+        }
+    }
+
+    // ignored, multithreading not supported on tomcat5
+    public void setCompileTimeout(long timeout) {
     }
 }
