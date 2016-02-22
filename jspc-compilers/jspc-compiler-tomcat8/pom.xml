@@ -31,19 +31,6 @@
     <artifactId>jspc-compiler-tomcat8</artifactId>
     <name>JSPC Compiler for Tomcat 8</name>
 
-    <distributionManagement>
-        <repository>
-            <id>nexus.releases</id>
-            <name>Internal Release Repository</name>
-            <url>http://nexus.bluesoft.com.br/content/repositories/releases</url>
-        </repository>
-          <snapshotRepository>
-             <id>deployment</id>
-            <name>Internal Release Repository</name>
-            <url>http://nexus.bluesoft.com.br/content/repositories/snapshots/</url>
-          </snapshotRepository>
-  </distributionManagement>
-
     <properties>
         <tomcatVersion>8.0.15</tomcatVersion>
     </properties>
