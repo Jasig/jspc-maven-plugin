@@ -130,4 +130,32 @@ public class JspCompilerImpl implements JspCompiler {
 
         jspc.execute();
     }
+
+  public void setCaching(boolean caching) {
+    jspc.setCaching(caching);
+  }
+
+  public void setGenStringAsCharArray(boolean genStringAsCharArray) {
+    jspc.setGenStringAsCharArray(genStringAsCharArray);
+  }
+
+  public void setPoolingEnabled(boolean poolingEnabled) {
+    jspc.setPoolingEnabled(poolingEnabled);
+    
+  }
+
+  public void setClassDebugInfo(boolean classDebugInfo) {
+    jspc.setClassDebugInfo(classDebugInfo);
+    
+  }
+
+  public void setCompileThreads(int threads) {
+    //TODO make multithreaded
+    
+  }
+
+  public void setCompileTimeout(long timeout) {
+    //TODO set timeout
+    
+  }
 }

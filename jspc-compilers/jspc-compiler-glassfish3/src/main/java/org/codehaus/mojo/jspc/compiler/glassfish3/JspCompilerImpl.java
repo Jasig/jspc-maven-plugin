@@ -23,6 +23,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.jms.IllegalStateException;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.jasper.JspC;
 import org.codehaus.mojo.jspc.compiler.JspCompiler;
@@ -129,5 +131,32 @@ public class JspCompilerImpl implements JspCompiler {
         jspc.setArgs(args.toArray(new String[args.size()]));
 
         jspc.execute();
+    }
+
+    public void setCaching(boolean caching) {
+      //TODO caching
+    }
+
+    public void setGenStringAsCharArray(boolean genStringAsCharArray) {
+      jspc.setGenStringAsCharArray(genStringAsCharArray);
+    }
+
+    public void setPoolingEnabled(boolean poolingEnabled) {
+      jspc.setPoolingEnabled(poolingEnabled);
+      
+    }
+
+    public void setClassDebugInfo(boolean classDebugInfo) {
+      jspc.setClassDebugInfo(classDebugInfo);
+      
+    }
+
+    public void setCompileThreads(int threads) {
+      //TODO make multithreaded
+      
+    }
+
+    public void setCompileTimeout(long timeout) {
+      //TODO create timeout
     }
 }

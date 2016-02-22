@@ -27,7 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.codehaus.mojo.jspc.compiler.JspCompiler;
 
 /**
- * JSP compiler for Tomcat 6.
+ * JSP compiler for Tomcat 7.
  *
  * @version $Id$
  */
@@ -129,5 +129,30 @@ public class JspCompilerImpl implements JspCompiler {
         jspc.setArgs(args.toArray(new String[args.size()]));
 
         jspc.execute();
+    }
+
+    public void setCaching(boolean caching) {
+    }
+
+    public void setGenStringAsCharArray(boolean genStringAsCharArray) {
+      jspc.setGenStringAsCharArray(genStringAsCharArray);
+    }
+
+    public void setPoolingEnabled(boolean poolingEnabled) {
+      jspc.setPoolingEnabled(poolingEnabled);
+      
+    }
+
+    public void setClassDebugInfo(boolean classDebugInfo) {
+      jspc.setClassDebugInfo(classDebugInfo);
+      
+    }
+
+    public void setCompileThreads(int threads) {
+      jspc.setThreads(threads);
+    }
+
+    public void setCompileTimeout(long timeout) {
+      jspc.setCompilationTimeoutMinutes(timeout);
     }
 }
