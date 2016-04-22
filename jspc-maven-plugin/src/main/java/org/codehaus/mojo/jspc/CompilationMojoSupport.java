@@ -121,7 +121,7 @@ abstract class CompilationMojoSupport extends AbstractMojo {
     boolean compile;
 
     /**
-     * Set this to false if you don"t want to include the compiled JSPs
+     * Set this to false if you don't want to include the compiled JSPs
      * in your web.xml nor add the generated sources to your project"s
      * source roots.
      */
