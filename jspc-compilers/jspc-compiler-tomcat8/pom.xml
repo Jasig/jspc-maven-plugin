@@ -32,7 +32,7 @@
     <name>JSPC Compiler for Tomcat 8</name>
 
     <properties>
-        <tomcatVersion>8.0.15</tomcatVersion>
+        <tomcatVersion>8.0.36</tomcatVersion>
     </properties>
     
     <dependencies>
