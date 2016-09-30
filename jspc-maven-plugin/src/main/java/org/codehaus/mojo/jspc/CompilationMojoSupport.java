@@ -399,7 +399,7 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         }
         
         // Maybe install the generated classes into the default output directory
-        if (compile && isWar) {
+        if (compile && isWar && includeInProject) {
             final Scanner scanner = buildContext.newScanner(this.workingDirectory);
             scanner.addDefaultExcludes();
             scanner.setIncludes(new String[] { "**/*.class" });
