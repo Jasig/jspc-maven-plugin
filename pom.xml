@@ -84,8 +84,8 @@
     </contributors>
     
     <properties>
-        <project.build.sourceVersion>1.5</project.build.sourceVersion>
-        <project.build.targetVersion>1.5</project.build.targetVersion>
+        <project.build.sourceVersion>1.8</project.build.sourceVersion>
+        <project.build.targetVersion>1.8</project.build.targetVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     
@@ -284,6 +284,10 @@
                         <exclude>jspc-compilers/jspc-compiler-tomcat7/src/main/java/org/codehaus/mojo/jspc/compiler/tomcat7/JspCompilerImpl.java</exclude>
                         <exclude>jspc-compilers/jspc-compiler-tomcat7/src/site/apt/index.apt</exclude>
                         <exclude>jspc-compilers/jspc-compiler-tomcat7/src/site/site.xml</exclude>
+                        <exclude>jspc-compilers/jspc-compiler-tomcat8_5_x/pom.xml</exclude>
+                        <exclude>jspc-compilers/jspc-compiler-tomcat8_5_x/src/main/java/org/codehaus/mojo/jspc/compiler/tomcat7/JspCompilerImpl.java</exclude>
+                        <exclude>jspc-compilers/jspc-compiler-tomcat8_5_x/src/site/apt/index.apt</exclude>
+                        <exclude>jspc-compilers/jspc-compiler-tomcat8_5_x/src/site/site.xml</exclude>
                         <exclude>jspc-compilers/pom.xml</exclude>
                         <exclude>jspc-compilers/src/site/apt/index.apt</exclude>
                         <exclude>jspc-compilers/src/site/site.xml</exclude>
