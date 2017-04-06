@@ -37,6 +37,7 @@
         <module>jspc-compiler-tomcat6</module>
         <module>jspc-compiler-tomcat7</module>
         <module>jspc-compiler-tomcat8</module>
+	<module>jspc-compiler-tomcat8_5_x</module>
         <module>jspc-compiler-glassfish3</module>
         <module>jspc-compiler-tomcat7-multithreaded</module>
     </modules>
