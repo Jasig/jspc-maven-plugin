@@ -15,3 +15,11 @@ See the [Maven Project Documentation](http://developer.jasig.org/projects/jspc-m
 ## JSP Compilers
 
 The available JSP compilers can be found by browsing [org.jasig.mojo.jspc GroupId](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.jasig.mojo.jspc%22).
+
+### Issues
+
+The plugin is limited to supporting JSP syntax that is supported by the corresponding compiler, which you should make sure also matches the compiler found on your servlet container installation. For any issues refer to the issue tracker for the corresponding compiler.
+
+### Known Issues
+
+Invocation of static methods on interfaces fails with the latest minor version of every tomcat compiler below 9.x.
