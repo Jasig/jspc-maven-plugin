@@ -18,7 +18,13 @@ The available JSP compilers can be found by browsing [org.jasig.mojo.jspc GroupI
 
 ### Issues
 
-The plugin is limited to supporting JSP syntax that is supported by the corresponding compiler, which you should make sure also matches the compiler found on your servlet container installation. For any issues refer to the issue tracker for the corresponding compiler.
+The JSPC plugin is a wrapper around Tomcat's JSP Compiler.
+For issues relating to JSP syntax please report the issue to tomcat.
+[Tomcat 6 issue tracker](https://bz.apache.org/bugzilla/describecomponents.cgi?product=Tomcat%206)
+[Tomcat 7 issue tracker](https://bz.apache.org/bugzilla/describecomponents.cgi?product=Tomcat%207)
+[Tomcat 8 issue tracker](https://bz.apache.org/bugzilla/describecomponents.cgi?product=Tomcat%208)
+
+Issues relating to maven or configuration options should reported to the [JSPC issue tracker](https://github.com/Jasig/jspc-maven-plugin/issues)
 
 ### Known Issues
 
