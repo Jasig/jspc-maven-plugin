@@ -166,7 +166,7 @@ public class MultiThreadedJspC extends JspC {
            }
 
            if(context == null) {
-               initServletContext(this.getClass().getClassLoader());
+               initServletContext(initClassLoader());
            }
 
            // No explicit pages, we'll process all .jsp in the webapp

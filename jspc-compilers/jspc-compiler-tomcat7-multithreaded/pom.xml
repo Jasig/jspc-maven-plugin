@@ -69,6 +69,12 @@
             <artifactId>tomcat-annotations-api</artifactId>
             <version>${tomcatVersion}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-coyote</artifactId>
+            <version>${tomcatVersion}</version>
+        </dependency>
     </dependencies>
 
     <build>
