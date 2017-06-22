@@ -366,7 +366,9 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         // JspC needs URLClassLoader, with tools.jar
         final ClassLoader parent = Thread.currentThread().getContextClassLoader();
         final JspcMojoClassLoader cl = new JspcMojoClassLoader(parent);
-        cl.addURL(findToolsJar());
+        if(compile) {
+            cl.addURL(findToolsJar());
+        }
         Thread.currentThread().setContextClassLoader(cl);
 
         try {
