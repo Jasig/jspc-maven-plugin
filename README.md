@@ -6,6 +6,10 @@ Alas, this plugin is unmaintained.
 
 [![No maintenance intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
 
+Consider instead:
+
++ [Apache Sling Maven Plugin for Compiling JSP Sources into Bundles][]
++ [Jetty JSPC Maven Plugin][]
 
 [![Build Status](https://travis-ci.org/Jasig/jspc-maven-plugin.svg?branch=master)](https://travis-ci.org/Jasig/jspc-maven-plugin)
 
@@ -36,3 +40,6 @@ Issues relating to maven or configuration options should reported to the [JSPC i
 ### Known Issues
 
 Invocation of static methods on interfaces fails with the latest minor version of every tomcat compiler below 9.x.
+
+[Apache Sling Maven Plugin for Compiling JSP Sources into Bundles]: http://sling.apache.org/components/jspc-maven-plugin/
+[Jetty JSPC Maven Plugin]: http://www.eclipse.org/jetty/documentation/9.4.x/jetty-jspc-maven-plugin.html
