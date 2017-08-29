@@ -1,5 +1,16 @@
 # JSPC Maven Plugin
 
+## Unmaintained
+
+Alas, this plugin is unmaintained.
+
+[![No maintenance intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+
+Consider instead:
+
++ [Apache Sling Maven Plugin for Compiling JSP Sources into Bundles][]
++ [Jetty JSPC Maven Plugin][]
+
 [![Build Status](https://travis-ci.org/Jasig/jspc-maven-plugin.svg?branch=master)](https://travis-ci.org/Jasig/jspc-maven-plugin)
 
 ## Info
@@ -18,6 +29,8 @@ The available JSP compilers can be found by browsing [org.jasig.mojo.jspc GroupI
 
 ### Issues
 
+[![No maintenance intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+
 The JSPC plugin is a wrapper around Tomcat's JSP Compiler.
 For issues relating to JSP syntax please report the issue to tomcat.
 [Tomcat 6 issue tracker](https://bz.apache.org/bugzilla/describecomponents.cgi?product=Tomcat%206)
@@ -28,4 +41,9 @@ Issues relating to maven or configuration options should reported to the [JSPC i
 
 ### Known Issues
 
+[![No maintenance intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+
 Invocation of static methods on interfaces fails with the latest minor version of every tomcat compiler below 9.x.
+
+[Apache Sling Maven Plugin for Compiling JSP Sources into Bundles]: http://sling.apache.org/components/jspc-maven-plugin/
+[Jetty JSPC Maven Plugin]: http://www.eclipse.org/jetty/documentation/9.4.x/jetty-jspc-maven-plugin.html
