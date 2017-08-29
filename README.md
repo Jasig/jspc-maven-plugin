@@ -29,6 +29,8 @@ The available JSP compilers can be found by browsing [org.jasig.mojo.jspc GroupI
 
 ### Issues
 
+[![No maintenance intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+
 The JSPC plugin is a wrapper around Tomcat's JSP Compiler.
 For issues relating to JSP syntax please report the issue to tomcat.
 [Tomcat 6 issue tracker](https://bz.apache.org/bugzilla/describecomponents.cgi?product=Tomcat%206)
@@ -38,6 +40,8 @@ For issues relating to JSP syntax please report the issue to tomcat.
 Issues relating to maven or configuration options should reported to the [JSPC issue tracker](https://github.com/Jasig/jspc-maven-plugin/issues)
 
 ### Known Issues
+
+[![No maintenance intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
 
 Invocation of static methods on interfaces fails with the latest minor version of every tomcat compiler below 9.x.
 
