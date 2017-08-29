@@ -1,5 +1,12 @@
 # JSPC Maven Plugin
 
+## Unmaintained
+
+Alas, this plugin is unmaintained.
+
+[![No maintenance intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+
+
 [![Build Status](https://travis-ci.org/Jasig/jspc-maven-plugin.svg?branch=master)](https://travis-ci.org/Jasig/jspc-maven-plugin)
 
 ## Info
