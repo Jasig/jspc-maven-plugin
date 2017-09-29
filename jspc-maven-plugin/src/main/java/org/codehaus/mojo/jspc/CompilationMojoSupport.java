@@ -18,21 +18,6 @@
  */
 package org.codehaus.mojo.jspc;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.XmlStreamReader;
 import org.apache.commons.io.output.XmlStreamWriter;
@@ -57,20 +42,42 @@ import org.codehaus.plexus.util.Scanner;
 import org.codehaus.plexus.util.StringUtils;
 import org.sonatype.plexus.build.incremental.BuildContext;
 
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.nio.file.*;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+
 abstract class CompilationMojoSupport extends AbstractMojo {
     private static final String DEFAULT_INJECT_STRING = "</web-app>";
-    
+
     /**
      * The working directory to create the generated java source files.
      */
     @Parameter(defaultValue="${project.build.directory}/jsp-source", required=true)
     File workingDirectory;
-    
+
+    /**
+     * Optional. The directory to merge JSPs to. Used only if there are {@link #extraSources}.
+     * Defaults to target/jsp-merge. You generally won't need to set this parameter.
+     */
+    @Parameter(defaultValue="${project.build.directory}/jsp-merge", required=true)
+    File mergeDirectory;
+
     /**
      * The sources of the webapp. If not specified all files under {@link #defaultSourcesDirectory} are used
      */
     @Parameter
     FileSet sources;
+
+    /**
+     * Optional. Allows you to specify additional directories to be merged into the main directory. This is
+     * done inside the build output directory prior to JSP compilation.
+     */
+    @Parameter
+    List<FileSet> extraSources;
 
     /**
      * Used if {@link #sources} is not specified
@@ -301,7 +308,37 @@ abstract class CompilationMojoSupport extends AbstractMojo {
 
         jspCompiler.setWebappDirectory(sources.getDirectory());
         log.debug("Source directory: " + this.sources.getDirectory());
-        
+
+        if (extraSources != null) {
+            jspCompiler.setWebappDirectory(mergeDirectory.toPath().normalize().toString());
+
+            // erase anything that was previously in the merge directory
+            Path mergeDirPath = mergeDirectory.toPath();
+            try {
+                if (mergeDirPath.toFile().exists()) {
+                    Files.walk(mergeDirPath, FileVisitOption.FOLLOW_LINKS)
+                            .sorted(Comparator.reverseOrder())
+                            .map(Path::toFile)
+                            .peek(System.out::println)
+                            .forEach(File::delete);
+                }
+            } catch (IOException e) {
+                throw new MojoFailureException("Failed to clean up " + mergeDirectory + ": " + e.getMessage());
+            }
+
+            // create merge directory and any paths to it
+            mergeDirectory.mkdirs();
+
+            // copy web.xml to merge directory - the JSP compiler will need it to resolve includes/options
+            copyToTarget(
+                    new File(sources.getDirectory() + File.separator + "WEB-INF", "web.xml").toPath(),
+                    new File(new File(mergeDirectory, "WEB-INF"), "web.xml").toPath()
+            );
+        } else {
+            mergeDirectory = null;
+        }
+        log.debug("Merge directory: " + mergeDirectory);
+
         jspCompiler.setOutputDirectory(this.workingDirectory);
         log.debug("Output directory: " + this.workingDirectory);
         
@@ -324,7 +361,7 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         
         final List<File> jspFiles;
         if (sources.getIncludes() != null) {
-            //Always need to get a full list of JSP files as incremental builds would result in an invalid web.xml
+            // Always need to get a full list of JSP files as incremental builds would result in an invalid web.xml
             final Scanner scanner = this.buildContext.newScanner(new File(sources.getDirectory()), true);
             scanner.setIncludes(sources.getIncludesArray());
             scanner.setExcludes(sources.getExcludesArray());
@@ -334,14 +371,48 @@ abstract class CompilationMojoSupport extends AbstractMojo {
             
             final String[] includes = scanner.getIncludedFiles();
             jspFiles = new ArrayList<File>(includes.length);
+            File targetRootDir = mergeDirectory;
             for (final String it : includes) {
-                jspFiles.add(new File(sources.getDirectory(), it));
+                if (targetRootDir == null) {
+                    jspFiles.add(new File(sources.getDirectory(), it));
+                } else {
+                    Path targetPath = copyToTarget(
+                            new File(sources.getDirectory(), it).toPath(),
+                            new File(targetRootDir, it).toPath()
+                    );
+                    jspFiles.add(targetPath.toFile());
+                }
             }
         }
         else {
             jspFiles = Collections.emptyList();
         }
-        
+
+        int i = 0;
+        if (extraSources != null) {
+            if (mergeDirectory == null) {
+                throw new MojoFailureException("If you specify extraSource, you must also specify a mergeDirectory.");
+            }
+            for (FileSet source : extraSources) {
+                File targetRootDir = new File(mergeDirectory,
+                        source.getOutputDirectory() != null ? source.getOutputDirectory() : "subdirectory-" + (i++));
+                final Scanner scanner = this.buildContext.newScanner(new File(source.getDirectory()), true);
+                scanner.setIncludes(source.getIncludesArray());
+                scanner.setExcludes(source.getExcludesArray());
+                scanner.addDefaultExcludes();
+
+                scanner.scan();
+
+                final String[] includes = scanner.getIncludedFiles();
+
+                for (final String it : includes) {
+                    Path sourcePath = new File(source.getDirectory(), it).toPath();
+                    Path targetPath = copyToTarget(sourcePath, new File(targetRootDir, it).toPath());
+                    jspFiles.add(targetPath.toFile());
+                }
+            }
+        }
+
         jspCompiler.setSmapDumped(smapDumped);
         jspCompiler.setSmapSuppressed(smapSuppressed);
         jspCompiler.setCompile(compile);
@@ -434,7 +505,30 @@ abstract class CompilationMojoSupport extends AbstractMojo {
             project.addCompileSourceRoot(workingDirectory.toString());
         }
     }
-    
+
+    /**
+     * Copies file from one location to another, creating any necessary directories and replacing anything
+     * that's already there.
+     *
+     * @param sourcePath   Location to copy from, should be a file that exists
+     * @param targetPath   Location to copy to, should be a file (may or may not exist)
+     *
+     * @return Normalized version of targetPath.
+     */
+    private Path copyToTarget(Path sourcePath, Path targetPath) throws MojoFailureException {
+        try {
+            targetPath.getParent().toFile().mkdirs();
+            CopyOption[] options = new CopyOption[]{
+                    StandardCopyOption.REPLACE_EXISTING,
+                    StandardCopyOption.COPY_ATTRIBUTES
+            };
+            Files.copy(sourcePath, targetPath, options);
+            return targetPath.normalize();
+        } catch (IOException e) {
+            throw new MojoFailureException(e.getMessage());
+        }
+    }
+
     /**
      * Figure out where the tools.jar file lives.
      */
