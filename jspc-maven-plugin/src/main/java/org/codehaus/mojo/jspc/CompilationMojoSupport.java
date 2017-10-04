@@ -367,15 +367,8 @@ abstract class CompilationMojoSupport extends AbstractMojo {
         final ClassLoader parent = Thread.currentThread().getContextClassLoader();
         final JspcMojoClassLoader cl = new JspcMojoClassLoader(parent);
 
-        boolean useToolsJar = true;
-        int majorVersion = Integer.parseInt(
-                System.getProperty("java.specification.version").replaceAll("\\..+", ""));
-
         // no tools.jar in JDK 9+
-        if (majorVersion >= 9) {
-            useToolsJar = false;
-        }
-
+        boolean useToolsJar = !SystemUtils.isJavaVersionAtLeast(9);
         if (useToolsJar && compile) {
             cl.addURL(findToolsJar());
         }
