@@ -25,7 +25,7 @@
     </parent>
     
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.jasig.mojo.jspc</groupId>
+    <groupId>com.scalyr.mojo.jspc</groupId>
     <artifactId>jspc</artifactId>
     <packaging>pom</packaging>
     <version>2.0.3-SNAPSHOT</version>
@@ -198,6 +198,19 @@
     <build>
         <pluginManagement>
             <plugins>
+                <!-- Unsure if this was needed or used in the end -->
+                <plugin>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <configuration>
+                                <repositoryId>artifactory-site</repositoryId>
+                                <url>https://artifactory.scalyr.com/artifactory/libs-release-local</url>
+                                <generatePom>true</generatePom>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
                 <plugin>
                     <artifactId>maven-release-plugin</artifactId>
                     <version>2.4.2</version>
